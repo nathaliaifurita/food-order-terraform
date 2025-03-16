@@ -6,12 +6,8 @@ variable "projectName" {
   default = "EKS-FOOD-ORDER-API"
 }
 
-variable "awsArnRole" {
-  default = "arn:aws:iam::295636516091:role"
-}
-
 variable "labRole" {
-  default = "${var.awsArnRole}/LabRole"
+  default = "arn:aws:iam::295636516091:role/LabRole"
 }
 
 variable "accessConfig" {
@@ -27,7 +23,7 @@ variable "instanceType" {
 }
 
 variable "principalArn" {
-  default = "${var.awsArnRole}/voclabs"
+  default = "arn:aws:iam::295636516091:role/voclabs"
 }
 
 variable "policyArn" {
