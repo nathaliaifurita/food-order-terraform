@@ -1,23 +1,7 @@
-data "aws_subnets" "private_subnets" {
-  filter {
-    name   = "tag:Environment"
-    values = ["private"]
-  }
+output "private_subnet_ids" {
+  value = aws_subnet.private_subnets[*].id
 }
 
-data "aws_subnets" "public_subnets" {
-  filter {
-    name   = "tag:Environment"
-    values = ["public"]
-  }
-}
-
-variable "private_subnet_ids" {
-  description = "Lista de subnets privadas"
-  default     = []
-}
-
-variable "public_subnet_ids" {
-  description = "Lista de subnets públicas"
-  default     = []
+output "public_subnet_ids" {
+  value = aws_subnet.public_subnets[*].id
 }

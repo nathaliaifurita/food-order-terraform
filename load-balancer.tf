@@ -3,14 +3,14 @@ resource "aws_lb" "food_order_lb" {
   internal           = true
   load_balancer_type = "application"
   security_groups    = [aws_security_group.sg.id]
-  subnets            = data.aws_subnets.private_subnets.ids 
+  subnets            = aws_subnet.private_subnets[*].id
 }
 
 resource "aws_lb_target_group" "food_order_tg" {
   name     = "food-order-tg"
   port     = 80
   protocol = "HTTP"
-  vpc_id   = data.aws_vpc.vpc.id
+  vpc_id   = aws_vpc.main_vpc.id
 
   health_check {
     path                = "/health"
@@ -31,4 +31,3 @@ resource "aws_lb_listener" "http" {
     target_group_arn = aws_lb_target_group.food_order_tg.arn
   }
 }
-
