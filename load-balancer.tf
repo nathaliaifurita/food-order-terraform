@@ -3,7 +3,7 @@ resource "aws_lb" "food_order_lb" {
   internal           = true
   load_balancer_type = "application"
   security_groups    = [aws_security_group.sg.id]
-  subnets            = var.private_subnet_ids
+  subnets            = data.aws_subnets.private_subnets.ids 
 }
 
 resource "aws_lb_target_group" "food_order_tg" {
@@ -31,3 +31,4 @@ resource "aws_lb_listener" "http" {
     target_group_arn = aws_lb_target_group.food_order_tg.arn
   }
 }
+

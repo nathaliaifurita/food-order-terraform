@@ -29,3 +29,9 @@ variable "principalArn" {
 variable "policyArn" {
   default = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
 }
+
+variable "private_subnet_ids" {
+  description = "Lista de subnets privadas"
+  default     = []
+}
+
