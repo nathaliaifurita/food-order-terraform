@@ -39,14 +39,20 @@ jobs:
           docker tag vilacaro/api:v1 759212231558.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/vilacaro/api:v1 && \
           docker push 759212231558.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/vilacaro/api
     
-
       - name: Update Kube Config
         run: |
           aws eks update-kubeconfig \
           --name ${{ env.CLUSTER_NAME }} \
           --region ${{ env.AWS_REGION }}
-      
+
+      - name: Get Load Balancer URL from food-order-terraform-db
+        id: get_lb_url
+        run: |
+          LB_URL=$(kubectl get svc my-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+          POSTGRES_URL="Host=${LB_URL};Port=5432;Database=foodorderdb;Username=postgres;Password=postgres"
+
       - name: Kube Apply
         run: |
-          kubectl apply -f k8s/eks-deployment.yaml
-          kubectl apply -f k8s/eks-svc.yaml
+          kubectl apply -f k8s/api-pod.yaml
+          kubectl apply -f k8s/api-service.yaml
+          kubectl apply -f k8s/api-deployment.yaml
