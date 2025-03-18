@@ -49,7 +49,7 @@ jobs:
         id: get_lb_url
         run: |
           LB_URL=$(kubectl get svc my-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
-          POSTGRES_URL="Host=${LB_URL};Port=5432;Database=foodorderdb;Username=postgres;Password=postgres"
+          POSTGRES_URL="Host=${LB_URL};Port=5432;Database=${{ secrets.POSTGRES_DB }};Username=${{ secrets.POSTGRES_USER }};Password=${{ secrets.POSTGRES_PASSWORD }}"
 
       - name: Kube Apply
         run: |
