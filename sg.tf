@@ -1,7 +1,7 @@
 resource "aws_security_group" "sg" {
   name        = "SG-${var.projectName}"
   description = "Security Group do Food Order API"
-  vpc_id      = ""
+  vpc_id      = aws_vpc.main_vpc.id
 
   # Inbound
   ingress {
