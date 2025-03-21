@@ -1,7 +1,13 @@
 resource "aws_api_gateway_rest_api" "food_order_api" {
   name        = "food-order-vpc-link"
   description = "API Gateway para o Food Order API"
+}
+
+# Criar o VPC Link
+resource "aws_api_gateway_vpc_link" "food_order" {
+  name        = "food-order-vpc-link"
   target_arns = [aws_lb.food_order_lb.arn]
+  description = "VPC Link para o Food Order API"
 }
 
 resource "aws_api_gateway_resource" "proxy" {
@@ -24,8 +30,8 @@ resource "aws_api_gateway_integration" "load_balancer" {
   integration_http_method = "ANY"
   type                    = "HTTP_PROXY"
   connection_type         = "VPC_LINK"
-  connection_id          = aws_api_gateway_vpc_link.food_order.id
-  uri                     = "http://${aws_lb.food_order_lb.dns_name}"
+  connection_id           = aws_api_gateway_vpc_link.food_order.id
+  uri                     = "http://${aws_lb.food_order_lb.dns_name}/{proxy}"
 }
 
 resource "aws_api_gateway_deployment" "food_order_api" {
