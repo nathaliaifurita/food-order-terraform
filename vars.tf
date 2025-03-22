@@ -35,3 +35,7 @@ variable "private_subnet_ids" {
   default     = []
 }
 
+variable "environment" {
+  default = "Production-2"
+}
+
