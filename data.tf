@@ -13,9 +13,12 @@ resource "aws_subnet" "public_subnets" {
   cidr_block        = cidrsubnet("172.31.0.0/16", 4, count.index + 2)
   availability_zone = element(["us-east-1a", "us-east-1b"], count.index)
 
+
   tags = {
-    Name        = "Public Subnet ${count.index + 1}"
-    Environment = "public"
+    Name        = "Private Subnet ${count.index + 1}"
+    Environment = "private"
+    "kubernetes.io/cluster/${var.projectName}" = "shared"
+    "kubernetes.io/role/internal-elb"         = "1"
   }
 }
 

@@ -30,6 +30,22 @@ resource "aws_security_group" "sg" {
     self        = true
   }
 
+  ingress {
+    description = "Allow worker nodes to communicate with control plane"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = [aws_vpc.main_vpc.cidr_block]
+  }
+
+  ingress {
+    description = "Kubelet API"
+    from_port   = 10250
+    to_port     = 10250
+    protocol    = "tcp"
+    self        = true
+  }
+
   egress {
     description = "All outbound traffic"
     from_port   = 0
