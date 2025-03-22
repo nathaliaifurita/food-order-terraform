@@ -15,4 +15,13 @@ resource "aws_eks_node_group" "eks-node" {
   update_config {
     max_unavailable = 1
   }
+
+  depends_on = [
+    aws_eks_cluster.eks-cluster
+  ]
+
+  tags = {
+    "kubernetes.io/cluster/${var.projectName}" = "owned"
+    Environment = var.environment
+  }
 }
