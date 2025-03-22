@@ -46,14 +46,18 @@ jobs:
           --name ${{ env.CLUSTER_NAME }} \
           --region ${{ env.AWS_REGION }}
 
-      - name: Get Load Balancer URL from food-order-terraform-db
-        id: get_lb_url
-        run: |
-          LB_URL=$(kubectl get svc my-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
-          POSTGRES_URL="Host=${LB_URL};Port=5432;Database=${{ secrets.POSTGRES_DB }};Username=${{ secrets.POSTGRES_USER }};Password=${{ secrets.POSTGRES_PASSWORD }}"
-
       - name: Kube Apply
         run: |
           kubectl apply -f k8s/api-pod.yaml
           kubectl apply -f k8s/api-service.yaml
+          kubectl apply -f k8s/api-deployment.yaml
+
+      - name: Get Load Balancer URL from food-order-terraform-db
+        id: get_lb_url
+        run: |
+          LB_URL=$(kubectl get svc api-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+          POSTGRES_URL="Host=${LB_URL};Port=5432;Database=${{ secrets.POSTGRES_DB }};Username=${{ secrets.POSTGRES_USER }};Password=${{ secrets.POSTGRES_PASSWORD }}"
+
+      - name: Kube Apply Deployment
+        run: |
           kubectl apply -f k8s/api-deployment.yaml
