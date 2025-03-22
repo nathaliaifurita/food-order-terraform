@@ -31,7 +31,8 @@ jobs:
           --region ${{ env.AWS_REGION }} | \
           docker login --username AWS \
           --password-stdin \
-          759212231558.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
+          759212231558.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com \
+          aws configure
 
       - name: BuildAndPush Dockerfile
         run: |
