@@ -3,11 +3,15 @@ resource "aws_api_gateway_rest_api" "food_order_api" {
   description = "API Gateway para o Food Order API"
 }
 
-# Criar o VPC Link
 resource "aws_api_gateway_vpc_link" "food_order" {
   name        = "food-order-vpc-link"
   target_arns = [aws_lb.food_order_lb.arn]
   description = "VPC Link para o Food Order API"
+
+  depends_on = [
+    aws_lb.food_order_lb,
+    aws_lb_listener.http
+  ]
 }
 
 resource "aws_api_gateway_resource" "proxy" {
