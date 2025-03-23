@@ -38,3 +38,19 @@ variable "private_subnet_ids" {
 variable "environment" {
   default = "Production-2"
 }
+
+variable "db_name" {
+  description = "Nome do banco de dados"
+  type        = string
+}
+
+variable "db_username" {
+  description = "Username do banco de dados"
+  type        = string
+}
+
+variable "db_password" {
+  description = "Senha do banco de dados"
+  type        = string
+  sensitive   = true
+}
