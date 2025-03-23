@@ -10,4 +10,8 @@ resource "aws_eks_cluster" "eks-cluster" {
   access_config {
     authentication_mode = var.accessConfig
   }
+
+  depends_on = [
+    aws_iam_role.eks_role
+  ]
 }
