@@ -57,3 +57,9 @@ variable "POSTGRES_PASSWORD" {
   sensitive   = true
   default     = "postgres"
 }
+
+variable "POSTGRES_HOST" {
+  description = "RDS Host endpoint"
+  type        = string
+  default     = "food-order-db.c79wo91zgdkv.us-east-1.rds.amazonaws.com"
+}

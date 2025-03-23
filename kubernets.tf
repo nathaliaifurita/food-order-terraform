@@ -1,3 +1,17 @@
+data "aws_eks_cluster" "cluster" {
+  name = aws_eks_cluster.eks-cluster.name
+  depends_on = [aws_eks_cluster.eks-cluster]
+}
+
+resource "time_sleep" "wait_for_kubernetes" {
+  depends_on = [
+    aws_eks_cluster.eks-cluster,
+    aws_eks_node_group.eks-node
+  ]
+
+  create_duration = "30s"
+}
+
 resource "kubernetes_deployment" "api" {
   metadata {
     name = "api-deployment"
@@ -51,8 +65,8 @@ resource "kubernetes_deployment" "api" {
   }
 
   depends_on = [
-    aws_eks_cluster.eks-cluster,
-    aws_eks_node_group.eks-node
+    time_sleep.wait_for_kubernetes,
+    kubernetes_config_map.db_config
   ]
 }
 
@@ -79,7 +93,8 @@ resource "kubernetes_service" "api" {
   }
 
   depends_on = [
-    kubernetes_deployment.api
+    kubernetes_deployment.api,
+    time_sleep.wait_for_kubernetes
   ]
 }
 
@@ -89,10 +104,12 @@ resource "kubernetes_config_map" "db_config" {
   }
 
   data = {
-    DB_CONNECTION_STRING = "Host=${data.aws_db_instance.rds.endpoint};Port=5432;Database=${var.db_name};Username=${var.db_username};Password=${var.db_password}"
+    DB_CONNECTION_STRING = "Host=${var.POSTGRES_HOST};Port=5432;Database=${var.POSTGRES_DB};Username=${var.POSTGRES_USER};Password=${var.POSTGRES_PASSWORD}"
   }
 
   depends_on = [
-    aws_eks_cluster.eks-cluster
+    time_sleep.wait_for_kubernetes,
+    aws_eks_cluster.eks-cluster,
+    aws_eks_node_group.eks-node
   ]
 }

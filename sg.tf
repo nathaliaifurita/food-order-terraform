@@ -39,11 +39,11 @@ resource "aws_security_group" "sg" {
   }
 
   ingress {
-    description = "Kubelet API"
-    from_port   = 10250
-    to_port     = 10250
+    description = "PostgreSQL from EKS"
+    from_port   = 5432
+    to_port     = 5432
     protocol    = "tcp"
-    self        = true
+    self        = true  // Changed this line to use self = true
   }
 
   egress {
@@ -52,13 +52,5 @@ resource "aws_security_group" "sg" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    description     = "PostgreSQL from EKS"
-    from_port       = 5432
-    to_port         = 5432
-    protocol        = "tcp"
-    security_groups = [aws_security_group.sg.id]  // Allow traffic from the EKS security group
   }
 }
