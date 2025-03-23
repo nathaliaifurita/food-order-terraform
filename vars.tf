@@ -42,15 +42,18 @@ variable "environment" {
 variable "POSTGRES_DB" {
   description = "Nome do banco de dados"
   type        = string
+  default     = "foodorderdb"
 }
 
 variable "POSTGRES_USER" {
   description = "Username do banco de dados"
   type        = string
+  default     = "postgres"
 }
 
 variable "POSTGRES_PASSWORD" {
   description = "Senha do banco de dados"
   type        = string
+  default     = "postgres"
   sensitive   = true
 }
