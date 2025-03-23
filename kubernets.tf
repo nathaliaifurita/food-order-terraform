@@ -36,14 +36,26 @@ resource "kubernetes_deployment" "api" {
             value = "http://0.0.0.0:9000"
           }
 
+          # Variáveis de ambiente do banco de dados
           env {
-            name = "ConnectionStrings__DefaultConnection"
-            value_from {
-              config_map_key_ref {
-                name = "db-config"
-                key  = "DB_CONNECTION_STRING"
-              }
-            }
+            name  = "POSTGRES_DB"
+            value = var.POSTGRES_DB
+          }
+
+          env {
+            name  = "POSTGRES_USER"
+            value = var.POSTGRES_USER
+          }
+
+          env {
+            name  = "POSTGRES_PASSWORD"
+            value = var.POSTGRES_PASSWORD
+          }
+
+          # String de conexão como variável de ambiente
+          env {
+            name  = "ConnectionStrings__DefaultConnection"
+            value = "Host=${aws_db_instance.rds_postgres.endpoint};Port=5432;Database=${var.POSTGRES_DB};Username=${var.POSTGRES_USER};Password=${var.POSTGRES_PASSWORD}"
           }
         }
       }
@@ -52,8 +64,7 @@ resource "kubernetes_deployment" "api" {
 
   depends_on = [
     aws_eks_cluster.eks_cluster,
-    aws_db_instance.rds_postgres,
-    kubernetes_config_map.db_config
+    aws_db_instance.rds_postgres
   ]
 }
 
