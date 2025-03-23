@@ -57,3 +57,7 @@ variable "POSTGRES_PASSWORD" {
   default     = "postgres"
   sensitive   = true
 }
+
+variable "RDS_INSTANCE" {
+  endpoint = string
+}
