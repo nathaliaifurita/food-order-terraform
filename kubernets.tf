@@ -60,7 +60,7 @@ resource "kubernetes_deployment" "api" {
           # String de conexão como variável de ambiente
           env {
             name  = "ConnectionStrings__DefaultConnection"
-            value = "Host=${host};Port=5432;Database=${var.POSTGRES_DB};Username=${var.POSTGRES_USER};Password=${var.POSTGRES_PASSWORD}"
+            value = "Host=${data.aws_db_instance.rds_postgres.endpoint};Port=5432;Database=${var.POSTGRES_DB};Username=${var.POSTGRES_USER};Password=${var.POSTGRES_PASSWORD}"
           }
         }
       }
@@ -100,7 +100,12 @@ resource "kubernetes_config_map" "db_config" {
     name = "db-config"
   }
 
+  data "aws_db_instance" "rds_postgres" {
+    name = endpoint
+    value = host
+  }
+
   data = {
-    DB_CONNECTION_STRING = "Host=${host};Port=5432;Database=${var.POSTGRES_DB};Username=${var.POSTGRES_USER};Password=${var.POSTGRES_PASSWORD}"
+    DB_CONNECTION_STRING = "Host=${data.aws_db_instance.rds_postgres.endpoint};Port=5432;Database=${var.POSTGRES_DB};Username=${var.POSTGRES_USER};Password=${var.POSTGRES_PASSWORD}"
   }
 }
