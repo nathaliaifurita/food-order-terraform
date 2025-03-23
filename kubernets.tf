@@ -91,6 +91,7 @@ resource "kubernetes_service" "api" {
   }
 
   depends_on = [
+    aws_eks_cluster.eks_cluster,
     kubernetes_deployment.api
   ]
 }
