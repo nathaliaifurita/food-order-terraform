@@ -52,10 +52,6 @@ resource "kubernetes_deployment" "api" {
             value = var.POSTGRES_PASSWORD
           }
 
-          data "aws_db_instance" "rds_postgres" {
-            db_instance_identifier = var.RDS_INSTANCE
-          }
-
           # String de conexão como variável de ambiente
           env {
             name  = "ConnectionStrings__DefaultConnection"
@@ -97,10 +93,6 @@ resource "kubernetes_service" "api" {
 resource "kubernetes_config_map" "db_config" {
   metadata {
     name = "db-config"
-  }
-
-  data "aws_db_instance" "rds_postgres" {
-    db_instance_identifier = var.RDS_INSTANCE
   }
 
   data = {
