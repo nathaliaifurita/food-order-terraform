@@ -90,7 +90,7 @@ resource "kubernetes_config_map" "db_config" {
   }
 
   data = {
-    DB_CONNECTION_STRING = "Host=${aws_db_instance.rds_postgres.endpoint};Port=5432;Database=${var.db_name};Username=${var.db_username};Password=${var.db_password}"
+    DB_CONNECTION_STRING = "Host=${aws_db_instance.rds_postgres.endpoint};Port=5432;Database=${var.POSTGRES_DB};Username=${var.POSTGRES_USER};Password=${var.POSTGRES_PASSWORD}"
   }
 
   depends_on = [

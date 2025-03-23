@@ -39,17 +39,17 @@ variable "environment" {
   default = "Production-2"
 }
 
-variable "db_name" {
+variable "POSTGRES_DB" {
   description = "Nome do banco de dados"
   type        = string
 }
 
-variable "db_username" {
+variable "POSTGRES_USER" {
   description = "Username do banco de dados"
   type        = string
 }
 
-variable "db_password" {
+variable "POSTGRES_PASSWORD" {
   description = "Senha do banco de dados"
   type        = string
   sensitive   = true
