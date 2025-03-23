@@ -99,6 +99,12 @@ resource "kubernetes_service" "api" {
 }
 
 resource "kubernetes_config_map" "db_config" {
+  depends_on = [
+    time_sleep.wait_for_kubernetes,
+    data.aws_eks_cluster.cluster,
+    data.aws_eks_cluster_auth.cluster
+  ]
+
   metadata {
     name = "db-config"
   }
@@ -106,10 +112,4 @@ resource "kubernetes_config_map" "db_config" {
   data = {
     DB_CONNECTION_STRING = "Host=${var.POSTGRES_HOST};Port=5432;Database=${var.POSTGRES_DB};Username=${var.POSTGRES_USER};Password=${var.POSTGRES_PASSWORD}"
   }
-
-  depends_on = [
-    time_sleep.wait_for_kubernetes,
-    aws_eks_cluster.eks-cluster,
-    aws_eks_node_group.eks-node
-  ]
 }
