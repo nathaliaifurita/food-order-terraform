@@ -12,5 +12,5 @@ provider "kubernetes" {
     args        = ["eks", "get-token", "--cluster-name", aws_eks_cluster.eks_cluster.name]
   }
 
-  depends_on = [aws_eks_cluster.eks_cluster]
+  depends_on    = [aws_eks_cluster.eks_cluster]
 }
