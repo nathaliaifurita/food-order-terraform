@@ -1,7 +1,7 @@
 resource "aws_lb" "food_order_lb" {
   name               = "food-order-lb"
   internal           = true
-  load_balancer_type = "network"  # Mudando para NLB
+  load_balancer_type = "network"
   subnets            = aws_subnet.private_subnets[*].id
 
   enable_deletion_protection = false
