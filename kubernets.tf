@@ -1,8 +1,3 @@
-data "aws_eks_cluster" "cluster" {
-  name = aws_eks_cluster.eks-cluster.name
-  depends_on = [aws_eks_cluster.eks-cluster]
-}
-
 resource "time_sleep" "wait_for_kubernetes" {
   depends_on = [
     aws_eks_cluster.eks-cluster,
