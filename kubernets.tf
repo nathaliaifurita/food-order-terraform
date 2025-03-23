@@ -63,7 +63,6 @@ resource "kubernetes_deployment" "api" {
   }
 
   depends_on = [
-    aws_eks_cluster.eks_cluster,
     aws_db_instance.rds_postgres
   ]
 }
@@ -91,7 +90,6 @@ resource "kubernetes_service" "api" {
   }
 
   depends_on = [
-    aws_eks_cluster.eks_cluster,
     kubernetes_deployment.api
   ]
 }
@@ -106,7 +104,6 @@ resource "kubernetes_config_map" "db_config" {
   }
 
   depends_on = [
-    aws_eks_cluster.eks_cluster,
     aws_db_instance.rds_postgres
   ]
 }
