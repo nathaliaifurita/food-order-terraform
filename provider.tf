@@ -19,8 +19,4 @@ provider "kubernetes" {
     command     = "aws"
     args        = ["eks", "get-token", "--cluster-name", data.aws_eks_cluster.eks_cluster.name]
   }
-  depends_on = [
-    aws_eks_cluster.eks_cluster,
-    aws_db_instance.rds_postgres
-  ]
 }
