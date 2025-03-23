@@ -52,6 +52,11 @@ resource "kubernetes_deployment" "api" {
             value = var.POSTGRES_PASSWORD
           }
 
+          data "aws_db_instance" "rds_postgres" {
+            name = endpoint
+            value = host
+          }
+
           # String de conexão como variável de ambiente
           env {
             name  = "ConnectionStrings__DefaultConnection"
