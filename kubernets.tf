@@ -53,8 +53,7 @@ resource "kubernetes_deployment" "api" {
           }
 
           data "aws_db_instance" "rds_postgres" {
-            name = endpoint
-            value = host
+            db_instance_identifier = var.RDS_INSTANCE
           }
 
           # String de conexão como variável de ambiente
@@ -101,8 +100,7 @@ resource "kubernetes_config_map" "db_config" {
   }
 
   data "aws_db_instance" "rds_postgres" {
-    name = endpoint
-    value = host
+    db_instance_identifier = var.RDS_INSTANCE
   }
 
   data = {
