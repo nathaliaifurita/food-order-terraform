@@ -61,6 +61,11 @@ resource "kubernetes_deployment" "api" {
       }
     }
   }
+
+  depends_on = [
+    aws_eks_cluster.eks_cluster,
+    aws_eks_node_group.eks_node
+  ]
 }
 
 resource "kubernetes_service" "api" {
@@ -98,4 +103,9 @@ resource "kubernetes_config_map" "db_config" {
   data = {
     DB_CONNECTION_STRING = "Host=${data.aws_db_instance.rds_postgres.endpoint};Port=5432;Database=${var.POSTGRES_DB};Username=${var.POSTGRES_USER};Password=${var.POSTGRES_PASSWORD}"
   }
+
+  depends_on = [
+    aws_eks_cluster.eks_cluster,
+    aws_eks_node_group.eks_node
+  ]
 }
