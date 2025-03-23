@@ -83,14 +83,13 @@ resource "kubernetes_service" "api" {
   ]
 }
 
-# ConfigMap para as configurações do banco de dados
 resource "kubernetes_config_map" "db_config" {
   metadata {
     name = "db-config"
   }
 
   data = {
-    DB_CONNECTION_STRING = "Host=${aws_lb.food_order_lb.dns_name};Port=5432;Database=foodorderdb;Username=postgres;Password=postgres"
+    DB_CONNECTION_STRING = "Host=${data.aws_db_instance.rds.endpoint};Port=5432;Database=${var.db_name};Username=${var.db_username};Password=${var.db_password}"
   }
 
   depends_on = [

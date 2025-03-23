@@ -35,3 +35,7 @@ resource "aws_subnet" "private_subnets" {
     "kubernetes.io/role/internal-elb"         = "1"
   }
 }
+
+data "aws_db_instance" "rds" {
+  db_instance_identifier = "food-order-db"
+}

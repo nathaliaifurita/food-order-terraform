@@ -53,4 +53,12 @@ resource "aws_security_group" "sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  ingress {
+    description     = "PostgreSQL from EKS"
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
+    security_groups = [aws_security_group.sg.id]  // Allow traffic from the EKS security group
+  }
 }
