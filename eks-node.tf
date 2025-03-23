@@ -60,8 +60,18 @@ resource "aws_launch_template" "eks_launch_template" {
   }
 
   user_data = base64encode(<<-EOF
-    #!/bin/bash
-    /etc/eks/bootstrap.sh ${aws_eks_cluster.eks-cluster.name}
-    EOF
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="==BOUNDARY=="
+
+--==BOUNDARY==
+Content-Type: text/x-shellscript; charset="us-ascii"
+
+#!/bin/bash
+/etc/eks/bootstrap.sh ${aws_eks_cluster.eks-cluster.name} \
+  --b64-cluster-ca ${aws_eks_cluster.eks-cluster.certificate_authority[0].data} \
+  --apiserver-endpoint ${aws_eks_cluster.eks-cluster.endpoint}
+
+--==BOUNDARY==--
+EOF
   )
 }
