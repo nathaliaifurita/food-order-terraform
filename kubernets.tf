@@ -1,3 +1,12 @@
+resource "time_sleep" "wait_for_kubernetes" {
+  depends_on = [
+    aws_eks_cluster.eks-cluster,
+    aws_eks_node_group.eks-node
+  ]
+
+  create_duration = "30s"
+}
+
 resource "kubernetes_deployment" "api" {
   metadata {
     name = "api-deployment"
@@ -51,8 +60,8 @@ resource "kubernetes_deployment" "api" {
   }
 
   depends_on = [
-    aws_eks_cluster.eks-cluster,
-    aws_eks_node_group.eks-node
+    time_sleep.wait_for_kubernetes,
+    kubernetes_config_map.db_config
   ]
 }
 
@@ -79,21 +88,23 @@ resource "kubernetes_service" "api" {
   }
 
   depends_on = [
-    kubernetes_deployment.api
+    kubernetes_deployment.api,
+    time_sleep.wait_for_kubernetes
   ]
 }
 
-# ConfigMap para as configurações do banco de dados
 resource "kubernetes_config_map" "db_config" {
+  depends_on = [
+    time_sleep.wait_for_kubernetes,
+    data.aws_eks_cluster.cluster,
+    data.aws_eks_cluster_auth.cluster
+  ]
+
   metadata {
     name = "db-config"
   }
 
   data = {
-    DB_CONNECTION_STRING = "Host=${aws_lb.food_order_lb.dns_name};Port=5432;Database=foodorderdb;Username=postgres;Password=postgres"
+    DB_CONNECTION_STRING = "Host=${var.POSTGRES_HOST};Port=5432;Database=${var.POSTGRES_DB};Username=${var.POSTGRES_USER};Password=${var.POSTGRES_PASSWORD}"
   }
-
-  depends_on = [
-    aws_eks_cluster.eks-cluster
-  ]
 }

@@ -38,3 +38,28 @@ variable "private_subnet_ids" {
 variable "environment" {
   default = "Production-2"
 }
+
+variable "POSTGRES_DB" {
+  description = "Name of the database to connect to"
+  type        = string
+  default     = "foodorderdb"
+}
+
+variable "POSTGRES_USER" {
+  description = "Database username"
+  type        = string
+  default     = "postgres"
+}
+
+variable "POSTGRES_PASSWORD" {
+  description = "Database password"
+  type        = string
+  sensitive   = true
+  default     = "postgres"
+}
+
+variable "POSTGRES_HOST" {
+  description = "RDS Host endpoint"
+  type        = string
+  default     = "food-order-db.c79wo91zgdkv.us-east-1.rds.amazonaws.com"
+}
