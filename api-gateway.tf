@@ -45,11 +45,11 @@ resource "aws_api_gateway_method" "proxy" {
 resource "aws_api_gateway_integration" "proxy" {
   rest_api_id             = aws_api_gateway_rest_api.food_order_api.id
   resource_id             = aws_api_gateway_resource.proxy.id
-  http_method             = aws_api_gateway_method.proxy.http_method
+  http_method             = aws_api_gateway_method.proxy.http_method  # Corrigido
   integration_http_method = "ANY"
   type                    = "HTTP_PROXY"
   connection_type         = "VPC_LINK"
-  connection_id           = aws_api_gateway_vpc_link.food_order.id
+  connection_id           = aws_api_gateway_vpc_link.auth.id  # Corrigido
   uri                     = "http://${aws_lb.food_order_lb.dns_name}/{proxy}"
 
   request_parameters = {

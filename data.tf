@@ -7,6 +7,10 @@ resource "aws_vpc" "main_vpc" {
   }
 }
 
+locals {
+  vpc_id = var.create_vpc ? aws_vpc.main[0].id : data.aws_vpc.existing[0].id
+}
+
 resource "aws_subnet" "public_subnets" {
   count                   = 2
   vpc_id                  = aws_vpc.main_vpc.id
