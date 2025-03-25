@@ -43,14 +43,15 @@ resource "aws_lb" "auth_lb" {
   internal           = true
   load_balancer_type = "application"
   security_groups    = [aws_security_group.fargate_sg.id]
-  subnets           = local.private_subnet_ids
+  subnets           = data.aws_subnet_ids.private.ids
 }
 
+# Target Group para o serviço de autenticação
 resource "aws_lb_target_group" "auth_tg" {
   name        = "auth-tg"
   port        = 4000
   protocol    = "HTTP"
-  vpc_id      = local.vpc_id
+  vpc_id      = data.aws_vpc.main.id
   target_type = "ip"
 
   health_check {
@@ -58,12 +59,13 @@ resource "aws_lb_target_group" "auth_tg" {
     healthy_threshold   = 2
     interval            = 30
     matcher            = "200"
-    path               = "/api/health"
+    path               = "/api/health"  # Ajuste para o endpoint de health check da sua aplicação Elixir
     timeout            = 5
     unhealthy_threshold = 2
   }
 }
 
+# Listener para o Load Balancer
 resource "aws_lb_listener" "auth" {
   load_balancer_arn = aws_lb.auth_lb.arn
   port              = 80
@@ -72,5 +74,14 @@ resource "aws_lb_listener" "auth" {
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.auth_tg.arn
+  }
+}
+
+# Data source para obter os IDs das subnets privadas
+data "aws_subnet_ids" "private" {
+  vpc_id = data.aws_vpc.main.id
+
+  tags = {
+    Tier = "Private"  # Ajuste conforme suas tags
   }
 }

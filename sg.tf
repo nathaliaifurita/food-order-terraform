@@ -58,14 +58,14 @@ resource "aws_security_group" "sg" {
 resource "aws_security_group" "fargate_sg" {
   name        = "fargate-auth-sg"
   description = "Security group for Auth Fargate service"
-  vpc_id      = local.vpc_id
+  vpc_id      = data.aws_vpc.main.id
 
   ingress {
     description = "Allow inbound from ALB"
     from_port   = 4000
     to_port     = 4000
     protocol    = "tcp"
-    cidr_blocks = ["172.31.0.0/16"]  # VPC CIDR
+    cidr_blocks = [data.aws_vpc.main.cidr_block]
   }
 
   egress {
@@ -77,5 +77,30 @@ resource "aws_security_group" "fargate_sg" {
 
   tags = {
     Name = "fargate-auth-sg"
+  }
+}
+
+resource "aws_security_group" "alb_sg" {
+  name        = "alb-auth-sg"
+  description = "Security group for Auth ALB"
+  vpc_id      = data.aws_vpc.main.id
+
+  ingress {
+    description = "Allow inbound HTTP"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = [data.aws_vpc.main.cidr_block]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "alb-auth-sg"
   }
 }

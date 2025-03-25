@@ -7,8 +7,12 @@ resource "aws_vpc" "main_vpc" {
   }
 }
 
+data "aws_vpc" "main" {
+  default = true  # ou use tags para identificar sua VPC específica
+}
+
 locals {
-  vpc_id = var.create_vpc ? aws_vpc.main[0].id : data.aws_vpc.existing[0].id
+  vpc_id = data.aws_vpc.main.id
 }
 
 resource "aws_subnet" "public_subnets" {
