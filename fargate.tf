@@ -8,11 +8,11 @@ resource "aws_ecs_task_definition" "auth_task" {
   network_mode            = "awsvpc"
   cpu                     = 256
   memory                  = 512
-  execution_role_arn      = aws_iam_role.ecs_execution_role.arn
-  task_role_arn           = aws_iam_role.ecs_task_role.arn
+  execution_role_arn      = var.labRole
+  task_role_arn           = var.labRole
   runtime_platform {
     operating_system_family = "LINUX"
-    cpu_architecture       = "ARM64"  # Importante: especificando ARM64
+    cpu_architecture       = "ARM64"
   }
 
   container_definitions = jsonencode([
@@ -21,7 +21,7 @@ resource "aws_ecs_task_definition" "auth_task" {
       image = "diegogl12/auth_cpf:latest"
       portMappings = [
         {
-          containerPort = 4000  # Porta que sua aplicação Phoenix/Elixir escuta
+          containerPort = 4000
           protocol      = "tcp"
         }
       ]

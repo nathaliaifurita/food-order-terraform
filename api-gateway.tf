@@ -18,8 +18,8 @@ resource "aws_api_gateway_authorizer" "auth" {
   rest_api_id           = aws_api_gateway_rest_api.food_order_api.id
   type                  = "REQUEST"
   identity_source       = "method.request.header.CPF"
-  authorizer_uri        = "http://${aws_lb.auth_lb.dns_name}/auth"  # Endpoint simples
-  authorizer_credentials = aws_iam_role.api_gateway_auth.arn
+  authorizer_uri        = "http://${aws_lb.auth_lb.dns_name}/auth"
+  authorizer_credentials = var.labRole
 }
 
 # Recurso proxy para todas as rotas
