@@ -38,12 +38,13 @@ resource "aws_lb_listener" "http" {
   }
 }
 
+# Load Balancer para o serviço de autenticação
 resource "aws_lb" "auth_lb" {
   name               = "auth-lb"
   internal           = true
   load_balancer_type = "application"
   security_groups    = [aws_security_group.fargate_sg.id]
-  subnets           = data.aws_subnet_ids.private.ids
+  subnets           = data.aws_subnets.private.ids
 }
 
 # Target Group para o serviço de autenticação
@@ -59,7 +60,7 @@ resource "aws_lb_target_group" "auth_tg" {
     healthy_threshold   = 2
     interval            = 30
     matcher            = "200"
-    path               = "/api/health"  # Ajuste para o endpoint de health check da sua aplicação Elixir
+    path               = "/health"
     timeout            = 5
     unhealthy_threshold = 2
   }
@@ -77,11 +78,15 @@ resource "aws_lb_listener" "auth" {
   }
 }
 
-# Data source para obter os IDs das subnets privadas
-data "aws_subnet_ids" "private" {
-  vpc_id = data.aws_vpc.main.id
+# Data source atualizado para subnets
+data "aws_subnets" "private" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.main.id]
+  }
 
-  tags = {
-    Tier = "Private"  # Ajuste conforme suas tags
+  filter {
+    name   = "tag:Tier"
+    values = ["Private"]  # Ajuste conforme suas tags
   }
 }
