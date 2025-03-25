@@ -56,7 +56,7 @@ resource "aws_ecs_service" "auth_service" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    subnets          = local.private_subnet_ids
+    subnets          = data.aws_subnets.private.ids  # Corrigido para usar o data source
     security_groups  = [aws_security_group.fargate_sg.id]
     assign_public_ip = false
   }

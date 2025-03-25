@@ -78,7 +78,6 @@ resource "aws_lb_listener" "auth" {
   }
 }
 
-# Data source atualizado para subnets
 data "aws_subnets" "private" {
   filter {
     name   = "vpc-id"
@@ -87,6 +86,6 @@ data "aws_subnets" "private" {
 
   filter {
     name   = "tag:Tier"
-    values = ["Private"]  # Ajuste conforme suas tags
+    values = ["Private"]  # Ajuste esta tag conforme sua configuração
   }
 }
