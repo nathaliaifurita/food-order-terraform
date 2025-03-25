@@ -35,16 +35,6 @@ resource "kubernetes_deployment" "api" {
             name  = "ASPNETCORE_URLS"
             value = "http://0.0.0.0:9000"
           }
-
-          env {
-            name = "ConnectionStrings__DefaultConnection"
-            value_from {
-              config_map_key_ref {
-                name = "db-config"
-                key  = "DB_CONNECTION_STRING"
-              }
-            }
-          }
         }
       }
     }
