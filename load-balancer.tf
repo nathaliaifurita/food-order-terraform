@@ -38,20 +38,6 @@ resource "aws_lb_listener" "http" {
   }
 }
 
-resource "aws_lb" "auth_lb" {
-  name               = "auth-lb"
-  internal          = true
-  load_balancer_type = "application"
-  security_groups    = [aws_security_group.fargate_sg.id]
-  subnets           = data.aws_subnets.private.ids
-
-  enable_deletion_protection = false
-
-  tags = {
-    Environment = "production"
-  }
-}
-
 resource "aws_lb_target_group" "auth_tg" {
   name        = "auth-tg"
   port        = 4000
@@ -81,14 +67,55 @@ resource "aws_lb_listener" "auth" {
   }
 }
 
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
+data "aws_vpc" "main" {
+  default = true  # ou use tags específicas para sua VPC
+}
+
 data "aws_subnets" "private" {
   filter {
     name   = "vpc-id"
     values = [data.aws_vpc.main.id]
   }
 
+  # Ajuste os filtros conforme suas tags
   filter {
     name   = "tag:Name"
-    values = ["*private*"]  # Ajuste conforme suas tags
+    values = ["*Private*", "*private*"]  # Case insensitive
+  }
+}
+
+resource "aws_subnet" "private" {
+  count             = 2
+  vpc_id            = data.aws_vpc.main.id
+  
+  # Usar diferentes blocos CIDR para cada subnet
+  cidr_block        = "172.31.${count.index + 48}.0/24"  # Ajuste conforme sua VPC
+  
+  # Usar diferentes AZs
+  availability_zone = data.aws_availability_zones.available.names[count.index]
+
+  tags = {
+    Name = "private-subnet-${count.index + 1}"
+    Tier = "Private"
+  }
+}
+
+resource "aws_lb" "auth_lb" {
+  name               = "auth-lb"
+  internal           = true
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.fargate_sg.id]
+  
+  # Usar tanto as subnets existentes quanto as novas
+  subnets = aws_subnet.private[*].id
+
+  enable_deletion_protection = false
+
+  tags = {
+    Environment = "production"
   }
 }
