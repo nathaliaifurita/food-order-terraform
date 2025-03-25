@@ -38,16 +38,20 @@ resource "aws_lb_listener" "http" {
   }
 }
 
-# Load Balancer para o serviço de autenticação
 resource "aws_lb" "auth_lb" {
   name               = "auth-lb"
-  internal           = true
+  internal          = true
   load_balancer_type = "application"
   security_groups    = [aws_security_group.fargate_sg.id]
   subnets           = data.aws_subnets.private.ids
+
+  enable_deletion_protection = false
+
+  tags = {
+    Environment = "production"
+  }
 }
 
-# Target Group para o serviço de autenticação
 resource "aws_lb_target_group" "auth_tg" {
   name        = "auth-tg"
   port        = 4000
@@ -66,10 +70,9 @@ resource "aws_lb_target_group" "auth_tg" {
   }
 }
 
-# Listener para o Load Balancer
 resource "aws_lb_listener" "auth" {
   load_balancer_arn = aws_lb.auth_lb.arn
-  port              = 80
+  port              = "80"
   protocol          = "HTTP"
 
   default_action {
@@ -85,7 +88,7 @@ data "aws_subnets" "private" {
   }
 
   filter {
-    name   = "tag:Tier"
-    values = ["Private"]  # Ajuste esta tag conforme sua configuração
+    name   = "tag:Name"
+    values = ["*private*"]  # Ajuste conforme suas tags
   }
 }

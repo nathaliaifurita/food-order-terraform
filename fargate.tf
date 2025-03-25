@@ -55,8 +55,11 @@ resource "aws_ecs_service" "auth_service" {
   desired_count   = 1
   launch_type     = "FARGATE"
 
+  # Adiciona dependência explícita
+  depends_on = [aws_lb_listener.auth]
+
   network_configuration {
-    subnets          = data.aws_subnets.private.ids  # Corrigido para usar o data source
+    subnets          = data.aws_subnets.private.ids
     security_groups  = [aws_security_group.fargate_sg.id]
     assign_public_ip = false
   }
