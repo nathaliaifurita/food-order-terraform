@@ -54,3 +54,28 @@ resource "aws_security_group" "sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+resource "aws_security_group" "fargate_sg" {
+  name        = "fargate-auth-sg"
+  description = "Security group for Auth Fargate service"
+  vpc_id      = local.vpc_id
+
+  ingress {
+    description = "Allow inbound from ALB"
+    from_port   = 4000
+    to_port     = 4000
+    protocol    = "tcp"
+    cidr_blocks = ["172.31.0.0/16"]  # VPC CIDR
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "fargate-auth-sg"
+  }
+}

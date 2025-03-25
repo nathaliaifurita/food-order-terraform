@@ -7,30 +7,42 @@ resource "aws_api_gateway_rest_api" "food_order_api" {
   }
 }
 
+resource "aws_api_gateway_vpc_link" "auth" {
+  name        = "auth-vpc-link"
+  description = "VPC Link para o serviço de autenticação"
+  target_arns = [aws_lb.auth_lb.arn]
+}
+
+resource "aws_api_gateway_authorizer" "auth" {
+  name                   = "fargate-authorizer"
+  rest_api_id           = aws_api_gateway_rest_api.food_order_api.id
+  type                  = "REQUEST"
+  identity_source       = "method.request.header.CPF"
+  authorizer_uri        = "http://${aws_lb.auth_lb.dns_name}/auth"  # Endpoint simples
+  authorizer_credentials = aws_iam_role.api_gateway_auth.arn
+}
+
+# Recurso proxy para todas as rotas
 resource "aws_api_gateway_resource" "proxy" {
   rest_api_id = aws_api_gateway_rest_api.food_order_api.id
   parent_id   = aws_api_gateway_rest_api.food_order_api.root_resource_id
   path_part   = "{proxy+}"
 }
 
-resource "aws_api_gateway_vpc_link" "food_order" {
-  name        = "food-order-vpc-link"
-  description = "VPC Link para o Food Order API"
-  target_arns = [aws_lb.food_order_lb.arn]
-}
-
+# Método que será aplicado a todas as rotas
 resource "aws_api_gateway_method" "proxy" {
   rest_api_id   = aws_api_gateway_rest_api.food_order_api.id
   resource_id   = aws_api_gateway_resource.proxy.id
   http_method   = "ANY"
-  authorization = "NONE"  # Confirmar que está NONE
+  authorization = "CUSTOM"
+  authorizer_id = aws_api_gateway_authorizer.auth.id
 
   request_parameters = {
-    "method.request.path.proxy" = true
+    "method.request.header.CPF" = true  # Torna o header CPF obrigatório
   }
 }
 
-resource "aws_api_gateway_integration" "load_balancer" {
+resource "aws_api_gateway_integration" "proxy" {
   rest_api_id             = aws_api_gateway_rest_api.food_order_api.id
   resource_id             = aws_api_gateway_resource.proxy.id
   http_method             = aws_api_gateway_method.proxy.http_method
@@ -45,54 +57,24 @@ resource "aws_api_gateway_integration" "load_balancer" {
   }
 }
 
-resource "aws_api_gateway_method" "options" {
-  rest_api_id   = aws_api_gateway_rest_api.food_order_api.id
-  resource_id   = aws_api_gateway_resource.proxy.id
-  http_method   = "OPTIONS"
-  authorization = "NONE"
-}
+resource "aws_api_gateway_integration" "load_balancer" {
+  rest_api_id             = aws_api_gateway_rest_api.food_order_api.id
+  resource_id             = aws_api_gateway_resource.proxy.id
+  http_method             = aws_api_gateway_method.your_method.http_method
+  integration_http_method = "ANY"
+  type                    = "HTTP_PROXY"
+  connection_type         = "VPC_LINK"
+  connection_id           = aws_api_gateway_vpc_link.food_order.id
+  uri                     = "http://${aws_lb.food_order_lb.dns_name}/{proxy}"
 
-resource "aws_api_gateway_method_response" "options" {
-  rest_api_id = aws_api_gateway_rest_api.food_order_api.id
-  resource_id = aws_api_gateway_resource.proxy.id
-  http_method = aws_api_gateway_method.options.http_method
-  status_code = "200"
-
-  response_parameters = {
-    "method.response.header.Access-Control-Allow-Headers" = true
-    "method.response.header.Access-Control-Allow-Methods" = true
-    "method.response.header.Access-Control-Allow-Origin"  = true
-  }
-}
-
-resource "aws_api_gateway_integration" "options" {
-  rest_api_id = aws_api_gateway_rest_api.food_order_api.id
-  resource_id = aws_api_gateway_resource.proxy.id
-  http_method = aws_api_gateway_method.options.http_method
-  type        = "MOCK"
-
-  request_templates = {
-    "application/json" = "{\"statusCode\": 200}"
-  }
-}
-
-resource "aws_api_gateway_integration_response" "options" {
-  rest_api_id = aws_api_gateway_rest_api.food_order_api.id
-  resource_id = aws_api_gateway_resource.proxy.id
-  http_method = aws_api_gateway_method.options.http_method
-  status_code = aws_api_gateway_method_response.options.status_code
-
-  response_parameters = {
-    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-    "method.response.header.Access-Control-Allow-Methods" = "'GET,OPTIONS,POST,PUT,DELETE'"
-    "method.response.header.Access-Control-Allow-Origin"  = "'*'"
+  request_parameters = {
+    "integration.request.path.proxy" = "method.request.path.proxy"
   }
 }
 
 resource "aws_api_gateway_deployment" "food_order_api" {
   depends_on = [
-    aws_api_gateway_integration.load_balancer,
-    aws_api_gateway_integration.options
+    aws_api_gateway_integration.load_balancer
   ]
   
   rest_api_id = aws_api_gateway_rest_api.food_order_api.id
