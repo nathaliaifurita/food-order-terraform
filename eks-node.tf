@@ -70,8 +70,8 @@ Content-Type: text/x-shellscript; charset="us-ascii"
 
 #!/bin/bash
 /etc/eks/bootstrap.sh ${aws_eks_cluster.eks_cluster[each.key].name} \
-  --b64-cluster-ca ${aws_eks_cluster.eks-cluster.certificate_authority[0].data} \
-  --apiserver-endpoint ${aws_eks_cluster.eks-cluster.endpoint}
+  --b64-cluster-ca ${aws_eks_cluster.eks_cluster[each.key].certificate_authority[0].data} \
+  --apiserver-endpoint ${aws_eks_cluster.eks_cluster[each.key].endpoint}
 
 --==BOUNDARY==--
 EOF
