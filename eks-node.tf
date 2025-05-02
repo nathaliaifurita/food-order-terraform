@@ -1,6 +1,5 @@
 resource "aws_eks_node_group" "eks-node" {
   for_each = toset(var.projectNames)
-  for_each = var.nodeGroup
 
   cluster_name    = aws_eks_cluster.eks_cluster[each.key].name
   node_group_name = "eks-node-${each.key}"
