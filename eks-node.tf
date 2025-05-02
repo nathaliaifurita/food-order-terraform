@@ -25,6 +25,7 @@ resource "aws_eks_node_group" "eks-node" {
   ]
 
   tags = {
+    Name = "eks-node-${each.key}"
     "kubernetes.io/cluster/${var.projectNames}" = "owned"
     Environment = var.environment
   }
