@@ -1,6 +1,8 @@
-resource "aws_eks_access_entry" "eks-access-entry" {
-  cluster_name      = aws_eks_cluster.eks-cluster.name
-  principal_arn     = var.principalArn
+resource "aws_eks_access_entry" "eks_access_entry" {
+  for_each = toset(var.project_names)
+
+  cluster_name  = aws_eks_cluster.eks_cluster[each.key].name
+  principal_arn = var.principalArn
   kubernetes_groups = ["food-order-api-groups"]
-  type              = "STANDARD"
+  type          = "STANDARD"
 }
