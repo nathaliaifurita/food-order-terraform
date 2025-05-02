@@ -28,8 +28,8 @@ resource "aws_eks_node_group" "eks-node" {
   }
 
   depends_on = flatten([
-    for k in var.projectNames : [
-      aws_eks_cluster.eks_cluster[k],
+    for each in var.projectNames : [
+      aws_eks_cluster.eks_cluster[each.key],
       aws_vpc.main_vpc,
       aws_subnet.private_subnets,
       aws_security_group.sg
