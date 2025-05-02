@@ -1,5 +1,6 @@
 resource "aws_security_group" "sg" {
-  name        = "SG-${var.projectNames}"
+  for_each    = toset(var.projectNames)
+  name        = "SG-${each.key}"
   description = "Security Group do Food Order API"
   vpc_id      = aws_vpc.main_vpc.id
 

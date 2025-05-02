@@ -16,6 +16,7 @@ locals {
 }
 
 resource "aws_subnet" "public_subnets" {
+  for_each                = toset(var.projectNames)
   count                   = 2
   vpc_id                  = aws_vpc.main_vpc.id
   cidr_block              = cidrsubnet("172.31.0.0/16", 4, count.index + 2)
@@ -25,12 +26,13 @@ resource "aws_subnet" "public_subnets" {
   tags = {
     Name        = "Public Subnet ${count.index + 1}"
     Environment = "public"
-    "kubernetes.io/cluster/${var.projectNames}" = "shared"
+    "kubernetes.io/cluster/${each.key}"        = "shared"
     "kubernetes.io/role/elb"                   = "1"
   }
 }
 
 resource "aws_subnet" "private_subnets" {
+  for_each                = toset(var.projectNames)
   count             = 2
   vpc_id            = aws_vpc.main_vpc.id
   cidr_block        = cidrsubnet("172.31.0.0/16", 4, count.index)
@@ -39,7 +41,7 @@ resource "aws_subnet" "private_subnets" {
   tags = {
     Name        = "Private Subnet ${count.index + 1}"
     Environment = "private"
-    "kubernetes.io/cluster/${var.projectNames}" = "shared"
+    "kubernetes.io/cluster/${each.key}"       = "shared"
     "kubernetes.io/role/internal-elb"         = "1"
   }
 }
