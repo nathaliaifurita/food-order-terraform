@@ -13,13 +13,15 @@ data "aws_vpc" "main" {
 
 locals {
   vpc_id = data.aws_vpc.main.id
+  projectNames = var.projectNames
+  indexed_projects = zipmap(var.projectNames, range(length(var.projectNames)))
 }
 
 resource "aws_subnet" "public_subnets" {
-  for_each                = toset(var.projectNames)
+  for_each                = locals.indexed_projects
   vpc_id                  = aws_vpc.main_vpc.id
-  cidr_block              = cidrsubnet("172.31.0.0/16", 4, each.key)
-  availability_zone       = element(["us-east-1a", "us-east-1b"], each.key % 2)
+  cidr_block              = cidrsubnet("172.31.0.0/16", 4, each.value + 10)
+  availability_zone       = element(["us-east-1a", "us-east-1b"], each.value % 2)
   map_public_ip_on_launch = true
 
   tags = {
@@ -31,9 +33,9 @@ resource "aws_subnet" "public_subnets" {
 }
 
 resource "aws_subnet" "private_subnets" {
-  for_each          = toset(var.projectNames)
+  for_each          = locals.indexed_projects
   vpc_id            = aws_vpc.main_vpc.id
-  cidr_block        = cidrsubnet("172.31.0.0/16", 4, each.key) 
+  cidr_block        = cidrsubnet("172.31.0.0/16", 4, each.value)
   availability_zone = element(["us-east-1a", "us-east-1b"], each.key % 2)
 
   tags = {
@@ -43,3 +45,4 @@ resource "aws_subnet" "private_subnets" {
     "kubernetes.io/role/internal-elb"         = "1"
   }
 }
+
