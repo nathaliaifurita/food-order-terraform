@@ -11,8 +11,9 @@ resource "aws_eip" "nat" {
 }
 
 resource "aws_nat_gateway" "main" {
-  allocation_id = aws_eip.nat.id
-  subnet_id     = aws_subnet.public_subnets[0].id
+  for_each     = local.indexed_projects
+  allocation_id = aws_eip.nat[each.key].id
+  subnet_id     = aws_subnet.public_subnets[each.key].id
 
   tags = {
     Name = "Main NAT Gateway"
