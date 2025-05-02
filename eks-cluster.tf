@@ -1,7 +1,7 @@
 resource "aws_eks_cluster" "eks_cluster" {
   for_each = toset(var.project_names)
 
-  name     = "eks-${each.key}"  # Aqui sim é uma string
+  name     = "eks-${each.key}"
   role_arn = var.labRole
 
   vpc_config {

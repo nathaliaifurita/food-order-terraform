@@ -4,7 +4,7 @@ variable "regionDefault" {
 
 variable "projectNames" {
   type    = list(string)
-  default = ["EKS-FOOD-CARDAPIO", "EKS-FOOD-PEDIDO", "EKS-FOOD-USUARIO", "EKS-FOOD-PAGAMENTO"]
+  default = ["cardapio", "pedido", "usuario", "pagamento"]
 }
 
 variable "labRole" {
