@@ -17,13 +17,6 @@ resource "aws_eks_node_group" "eks-node" {
     max_unavailable = 1
   }
 
-  depends_on = [
-    values(aws_eks_cluster.eks_cluster),
-    aws_vpc.main_vpc,
-    aws_subnet.private_subnets,
-    aws_security_group.sg
-  ]
-
   tags = {
     "kubernetes.io/cluster/${var.projectNames}" = "owned"
     Environment = var.environment
@@ -33,6 +26,15 @@ resource "aws_eks_node_group" "eks-node" {
     name    = aws_launch_template.eks_launch_template[each.key].name
     version = aws_launch_template.eks_launch_template[each.key].latest_version
   }
+
+  depends_on = concat(
+    [for k in var.projectNames : aws_eks_cluster.eks_cluster[k]],
+    [
+      aws_vpc.main_vpc,
+      aws_subnet.private_subnets,
+      aws_security_group.sg
+    ]
+  )
 }
 
 resource "aws_launch_template" "eks_launch_template" {
