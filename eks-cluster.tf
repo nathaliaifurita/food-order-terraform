@@ -1,5 +1,5 @@
 resource "aws_eks_cluster" "eks-cluster" {
-  name     = var.projectName
+  name     = var.projectNames
   role_arn = var.labRole
   
   vpc_config {

@@ -23,7 +23,7 @@ resource "aws_eks_node_group" "eks-node" {
   ]
 
   tags = {
-    "kubernetes.io/cluster/${var.projectName}" = "owned"
+    "kubernetes.io/cluster/${var.projectNames}" = "owned"
     Environment = var.environment
   }
 
@@ -55,7 +55,7 @@ resource "aws_launch_template" "eks_launch_template" {
     resource_type = "instance"
     tags = {
       Name = "EKS-Node"
-      "kubernetes.io/cluster/${var.projectName}" = "owned"
+      "kubernetes.io/cluster/${var.projectNames}" = "owned"
     }
   }
 

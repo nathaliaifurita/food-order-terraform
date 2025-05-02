@@ -2,8 +2,10 @@ variable "regionDefault" {
   default = "us-east-1"
 }
 
-variable "projectName" {
+variable "projectNames" {
   default = "EKS-FOOD-ORDER-API"
+  type    = list(string)
+  default = ["EKS-FOOD-CARDAPIO", "EKS-FOOD-PEDIDO", "EKS-FOOD-USUARIO", "EKS-FOOD-PAGAMENTO"]
 }
 
 variable "labRole" {
