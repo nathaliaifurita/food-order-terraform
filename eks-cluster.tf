@@ -1,5 +1,5 @@
 resource "aws_eks_cluster" "eks_cluster" {
-  for_each = toset(var.project_names)
+  for_each = toset(var.projectNames)
 
   name     = "eks-${each.key}"
   role_arn = var.labRole
