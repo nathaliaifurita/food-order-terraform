@@ -8,7 +8,6 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  CLUSTER_NAME: EKS-FOOD-ORDER-API-CLUSTER
 
 jobs:
   deploy-production:
@@ -25,7 +24,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ID }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: ${{ env.AWS_REGION }}
-      
+
       - name: Login ECR
         run: |
           aws ecr get-login-password \
@@ -34,53 +33,40 @@ jobs:
           --password-stdin \
           759212231558.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
 
-      - name: BuildAndPush Dockerfile vilacaro/api
+      - name: Build and Push Images
         run: |
           docker build -t vilacaro/api . && \
           docker tag vilacaro/api:v1 759212231558.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/vilacaro/api:v1 && \
           docker push 759212231558.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/vilacaro/api
-
-      - name: Build and Push vilacaro/pedido
-        run: |
+          
           docker build -t vilacaro/pedido -f Dockerfile.pedido . && \
           docker tag vilacaro/pedido:latest 759212231558.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/vilacaro/pedido:latest && \
           docker push 759212231558.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/vilacaro/pedido:latest
-
-      - name: Build and Push diegogl12/food-order-pagamento
-        run: |
+          
           docker build -t diegogl12/food-order-pagamento -f Dockerfile.pagamento . && \
           docker tag diegogl12/food-order-pagamento:latest 759212231558.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/diegogl12/food-order-pagamento:latest && \
           docker push 759212231558.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/diegogl12/food-order-pagamento:latest
-
-      - name: Build and Push japamanoel/foodorder_cardapio
-        run: |
+          
           docker build -t japamanoel/foodorder_cardapio -f Dockerfile.cardapio . && \
           docker tag japamanoel/foodorder_cardapio:latest 759212231558.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/japamanoel/foodorder_cardapio:latest && \
           docker push 759212231558.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/japamanoel/foodorder_cardapio:latest
 
-      - name: Update Kube Config
+      - name: Deploy API - Cardápio
         run: |
-          aws eks update-kubeconfig \
-          --name ${{ env.CLUSTER_NAME }} \
-          --region ${{ env.AWS_REGION }}
+          aws eks update-kubeconfig --name EKS-FOOD-CARDAPIO --region ${{ env.AWS_REGION }}
+          kubectl apply -f k8s/api-cardapio/
 
-      - name: Get Load Balancer URL from food-order-terraform-db
-        id: get_lb_url
+      - name: Deploy API - Pagamento
         run: |
-          LB_URL=$(kubectl get svc my-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
-          POSTGRES_URL="Host=${LB_URL};Port=5432;Database=${{ secrets.POSTGRES_DB }};Username=${{ secrets.POSTGRES_USER }};Password=${{ secrets.POSTGRES_PASSWORD }}"
+          aws eks update-kubeconfig --name EKS-FOOD-PAGAMENTO --region ${{ env.AWS_REGION }}
+          kubectl apply -f k8s/api-pagamento/
 
-      - name: Kube Apply
+      - name: Deploy API - Pedido
         run: |
-          kubectl apply -f k8s/api-cardapio/api-pod.yaml
-          kubectl apply -f k8s/api-cardapio/api-service.yaml
-          kubectl apply -f k8s/api-cardapio/api-deployment.yaml          
-          kubectl apply -f k8s/api-pagamento/api-pod.yaml
-          kubectl apply -f k8s/api-pagamento/api-service.yaml
-          kubectl apply -f k8s/api-pagamento/api-deployment.yaml
-          kubectl apply -f k8s/api-pedido/api-pod.yaml
-          kubectl apply -f k8s/api-pedido/api-service.yaml
-          kubectl apply -f k8s/api-pedido/api-deployment.yaml
-          kubectl apply -f k8s/api-usuario/api-pod.yaml
-          kubectl apply -f k8s/api-usuario/api-service.yaml
-          kubectl apply -f k8s/api-usuario/api-deployment.yaml
+          aws eks update-kubeconfig --name EKS-FOOD-PEDIDO --region ${{ env.AWS_REGION }}
+          kubectl apply -f k8s/api-pedido/
+
+      - name: Deploy API - Usuário
+        run: |
+          aws eks update-kubeconfig --name EKS-FOOD-USUARIO --region ${{ env.AWS_REGION }}
+          kubectl apply -f k8s/api-usuario/
