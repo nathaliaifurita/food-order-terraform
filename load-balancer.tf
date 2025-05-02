@@ -1,5 +1,11 @@
+locals {
+  projectNames = var.projectNames
+  indexed_projects = zipmap(var.projectNames, range(length(var.projectNames)))
+}
+
 resource "aws_lb" "food_order_lb" {
-  name               = "food-order-lb"
+  for_each = local.indexed_projects
+  name               = "food-order-lb-${each.key}"
   internal           = true
   load_balancer_type = "network"
   subnets            = aws_subnet.public_subnets[each.key].id
@@ -12,7 +18,8 @@ resource "aws_lb" "food_order_lb" {
 }
 
 resource "aws_lb_target_group" "food_order_tg" {
-  name        = "food-order-tg"
+  for_each    = local.indexed_projects
+  name        = "food-order-tg-${each.key}"
   port        = 80
   protocol    = "TCP"  # Mudando para TCP para NLB
   vpc_id      = aws_vpc.main_vpc.id
@@ -28,13 +35,14 @@ resource "aws_lb_target_group" "food_order_tg" {
 }
 
 resource "aws_lb_listener" "http" {
-  load_balancer_arn = aws_lb.food_order_lb.arn
+  for_each    = local.indexed_projects
+  load_balancer_arn = aws_lb.food_order_lb[each.key].arn
   port              = 80
   protocol          = "TCP"
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.food_order_tg.arn
+    target_group_arn = aws_lb_target_group.food_order_tg[each.key].arn
   }
 }
 
