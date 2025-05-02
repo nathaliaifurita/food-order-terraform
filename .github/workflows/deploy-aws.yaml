@@ -7,7 +7,7 @@ on:
       - fase_4_a
 
 env:
-  AWS_REGION: us-east-1
+  aws-region: us-east-1
   CLUSTER_NAME: EKS-FOOD-ORDER-API-CLUSTER
 
 jobs:
