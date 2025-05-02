@@ -18,7 +18,7 @@ resource "aws_eks_node_group" "eks-node" {
   }
 
   depends_on = [
-    aws_eks_cluster.eks_cluster[each.key].name,
+    values(aws_eks_cluster.eks_cluster),
     aws_vpc.main_vpc,
     aws_subnet.private_subnets,
     aws_security_group.sg
