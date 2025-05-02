@@ -27,12 +27,12 @@ resource "aws_eks_node_group" "eks-node" {
     version = aws_launch_template.eks_launch_template[each.key].latest_version
   }
 
-  depends_on = flatten([
+  depends_on = [
       aws_eks_cluster.eks_cluster[each.key].name,
       aws_vpc.main_vpc,
       aws_subnet.private_subnets,
       aws_security_group.sg
-  ])
+  ]
 }
 
 resource "aws_launch_template" "eks_launch_template" {
