@@ -57,7 +57,6 @@ jobs:
           docker tag japamanoel/foodorder_cardapio:latest 759212231558.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/japamanoel/foodorder_cardapio:latest && \
           docker push 759212231558.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/japamanoel/foodorder_cardapio:latest
 
-    
       - name: Update Kube Config
         run: |
           aws eks update-kubeconfig \
