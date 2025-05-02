@@ -1,4 +1,6 @@
 resource "aws_eks_access_policy_association" "eks-access-policy" {
+  for_each = toset(var.projectNames)
+
   cluster_name  = aws_eks_cluster.eks_cluster[each.key].name
   policy_arn    = var.policyArn
   principal_arn = var.principalArn
