@@ -71,10 +71,6 @@ data "aws_availability_zones" "available" {
   state = "available"
 }
 
-data "aws_vpc" "main" {
-  default = true  # ou use tags específicas para sua VPC
-}
-
 data "aws_subnets" "private" {
   filter {
     name   = "vpc-id"
