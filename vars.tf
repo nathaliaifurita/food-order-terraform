@@ -3,7 +3,6 @@ variable "regionDefault" {
 }
 
 variable "projectNames" {
-  default = "EKS-FOOD-ORDER-API"
   type    = list(string)
   default = ["EKS-FOOD-CARDAPIO", "EKS-FOOD-PEDIDO", "EKS-FOOD-USUARIO", "EKS-FOOD-PAGAMENTO"]
 }
