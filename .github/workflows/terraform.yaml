@@ -4,9 +4,10 @@ on:
   push:
     branches:
       - main
+      - fase_4_a
 
 env:
-  REGION_DEFAULT: us-east-1
+  AWS_REGION: us-east-1
 
 jobs:
   create_infra:
