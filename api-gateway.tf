@@ -63,7 +63,7 @@ resource "aws_api_gateway_deployment" "food_order_api" {
   ]
   
   rest_api_id = aws_api_gateway_rest_api.food_order_api.id
-  aws_api_gateway_stage  = "prod"
+  stage_name  = "prod"
 }
 
 resource "aws_api_gateway_rest_api_policy" "api_policy" {
