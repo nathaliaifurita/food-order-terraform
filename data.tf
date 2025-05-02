@@ -36,7 +36,7 @@ resource "aws_subnet" "private_subnets" {
   for_each          = local.indexed_projects
   vpc_id            = aws_vpc.main_vpc.id
   cidr_block        = cidrsubnet("172.31.0.0/16", 4, each.value)
-  availability_zone = element(["us-east-1a", "us-east-1b"], each.key % 2)
+  availability_zone = element(["us-east-1a", "us-east-1b"], each.value % 2)
 
   tags = {
     Name        = "Private Subnet ${each.key}"
