@@ -28,7 +28,10 @@ resource "aws_eks_node_group" "eks-node" {
   }
 
   depends_on = [
-      aws_eks_cluster.eks_cluster[each.key].name,
+      aws_eks_cluster.eks_cluster["eks-cardapio"],
+      aws_eks_cluster.eks_cluster["eks-pedido"],
+      aws_eks_cluster.eks_cluster["eks-usuario"],
+      aws_eks_cluster.eks_cluster["eks-pagamento"],
       aws_vpc.main_vpc,
       aws_subnet.private_subnets,
       aws_security_group.sg
