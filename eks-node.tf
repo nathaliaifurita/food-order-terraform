@@ -36,6 +36,7 @@ resource "aws_eks_node_group" "eks-node" {
 }
 
 resource "aws_launch_template" "eks_launch_template" {
+  for_each = toset(var.projectNames)
   name = "eks-launch-template"
 
   block_device_mappings {
