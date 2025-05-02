@@ -30,8 +30,8 @@ resource "aws_eks_node_group" "eks-node" {
   }
 
   launch_template {
-    name    = aws_launch_template.eks_launch_template.name
-    version = aws_launch_template.eks_launch_template.latest_version
+    name    = aws_launch_template.eks_launch_template[each.key].name
+    version = aws_launch_template.eks_launch_template[each.key].latest_version
   }
 }
 
