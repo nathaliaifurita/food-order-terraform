@@ -85,7 +85,6 @@ resource "aws_subnet" "private_subnets" {
   }
 }
 
-
 ###############################
 # LOAD BALANCERS (NLB por projeto)
 ###############################
