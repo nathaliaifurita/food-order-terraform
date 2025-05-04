@@ -1,7 +1,3 @@
-locals {
-  indexed_projects = zipmap(var.projectNames, range(length(var.projectNames)))
-}
-
 resource "aws_lb" "food_order_lb" {
   for_each = local.indexed_projects
   name               = "food-order-lb-${each.key}"
