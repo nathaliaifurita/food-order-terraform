@@ -59,7 +59,7 @@ resource "aws_ecs_service" "auth_service" {
   depends_on = [aws_lb_listener.auth]
 
   network_configuration {
-    subnets          = data.aws_subnets.private.ids
+    subnets          = [aws_subnet.private_subnets[*].id]
     security_groups  = [aws_security_group.fargate_sg.id]
     assign_public_ip = false
   }
