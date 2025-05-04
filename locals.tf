@@ -3,7 +3,8 @@
 ###############################
 
 variable "projectNames" {
-  type = list("cardapio", "pagamento", "pedido", "usuario")
+  type    = list(string)
+  default = ["cardapio", "pagamento", "pedido", "usuario"]
 }
 
 variable "environment" {
