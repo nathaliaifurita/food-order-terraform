@@ -3,7 +3,7 @@
 ###############################
 
 variable "projectNames" {
-  type = list(string)
+  type = list(cardapio, pagamento, pedido, usuario)
 }
 
 variable "environment" {
