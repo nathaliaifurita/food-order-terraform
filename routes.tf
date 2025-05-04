@@ -29,12 +29,12 @@ resource "aws_route_table" "private" {
 resource "aws_route_table_association" "public" {
   for_each       = local.indexed_projects
   subnet_id      = aws_subnet.public_subnets[each.key].id
-  route_table_id = aws_route_table.public.id
+  route_table_id = aws_route_table.public[each.key].id
 }
 
 resource "aws_route_table_association" "private" {
   for_each       = local.indexed_projects
   subnet_id      = aws_subnet.private_subnets[each.key].id
-  route_table_id = aws_route_table.private.id
+  route_table_id = aws_route_table.private[each.key].id
 }
 
