@@ -4,7 +4,7 @@
 
 variable "projectNames" {
   type    = list(string)
-  default = ["cardapio", "pagamento", "pedido", "usuario"]
+  default = ["cardapio", "pagamento", "pedido", "usuario", "auth"]
 }
 
 variable "environment" {
