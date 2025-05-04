@@ -2,11 +2,6 @@ variable "regionDefault" {
   default = "us-east-1"
 }
 
-variable "projectNames" {
-  type    = list(string)
-  default = ["cardapio", "pedido", "usuario", "pagamento"]
-}
-
 variable "labRole" {
   default = "arn:aws:iam::916083420257:role/LabRole"
 }
