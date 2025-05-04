@@ -1,5 +1,4 @@
 locals {
-  projectNames = var.projectNames
   indexed_projects = zipmap(var.projectNames, range(length(var.projectNames)))
 }
 

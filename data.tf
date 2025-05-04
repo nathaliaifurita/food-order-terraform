@@ -11,12 +11,6 @@ data "aws_vpc" "main" {
   default = true  # ou use tags para identificar sua VPC específica
 }
 
-locals {
-  vpc_id = data.aws_vpc.main.id
-  projectNames = var.projectNames
-  indexed_projects = zipmap(var.projectNames, range(length(var.projectNames)))
-}
-
 resource "aws_subnet" "public_subnets" {
   for_each                = local.indexed_projects
   vpc_id                  = aws_vpc.main_vpc.id
