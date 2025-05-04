@@ -141,7 +141,7 @@ resource "aws_lb" "auth_lb" {
   internal           = true
   load_balancer_type = "application"
   security_groups    = [aws_security_group.fargate_sg.id]
-  subnets            = aws_subnet.private_subnets["auth"].id
+  subnets            = [aws_subnet.private_subnets["auth"].id]
 
   enable_deletion_protection = false
 
