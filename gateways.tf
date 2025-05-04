@@ -7,6 +7,7 @@ resource "aws_internet_gateway" "main" {
 }
 
 resource "aws_eip" "nat" {
+  for_each     = local.indexed_projects
   domain = "vpc"
 }
 
