@@ -12,6 +12,10 @@ variable "environment" {
   default = "production"
 }
 
+variable "regionDefault" {
+  default = "us-east-1"
+}
+
 ###############################
 # LOCALS
 ###############################
