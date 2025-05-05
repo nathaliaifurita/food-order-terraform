@@ -60,7 +60,7 @@ locals {
   project_names_map    = zipmap(["auth", "pagamento", "pedido", "cardapio", "usuario"], ["auth", "pagamento", "pedido", "cardapio", "usuario"])
   indexed_projects      = zipmap(var.projectNames, range(length(var.projectNames)))
   availability_zones    = data.aws_availability_zones.available.names
-  vpc_cidr              = "172.31.0.0/16"
+  vpc_cidr              = "10.0.0.0/16"
   private_subnet_cidrs  = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
   public_subnet_cidrs   = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
 }
@@ -197,34 +197,5 @@ resource "aws_lb" "auth_lb" {
 
   tags = {
     Environment = var.environment
-  }
-}
-
-resource "aws_lb_target_group" "auth_tg" {
-  name        = "auth-tg"
-  port        = 4000
-  protocol    = "HTTP"
-  vpc_id      = data.aws_vpc.main.id
-  target_type = "ip"
-
-  health_check {
-    enabled             = true
-    healthy_threshold   = 2
-    interval            = 30
-    matcher             = "200"
-    path                = "/health"
-    timeout             = 5
-    unhealthy_threshold = 2
-  }
-}
-
-resource "aws_lb_listener" "auth" {
-  load_balancer_arn = aws_lb.auth_lb.arn
-  port              = 80
-  protocol          = "HTTP"
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.auth_tg.arn
   }
 }
