@@ -95,7 +95,7 @@ resource "aws_vpc" "main_vpc" {
 ###############################
 
 resource "aws_subnet" "public_subnets" {
-  for_each = local.indexed_projects.project_names
+  for_each = local.project_names
 
   vpc_id                  = aws_vpc.main_vpc.id
   cidr_block              = cidrsubnet(local.vpc_cidr, 4, index(keys(local.supported_azs), local.project_az_map[each.key]))
@@ -108,7 +108,7 @@ resource "aws_subnet" "public_subnets" {
 }
 
 resource "aws_subnet" "private_subnets" {
-  for_each = local.indexed_projects.project_names
+  for_each = local.project_names
 
   vpc_id            = aws_vpc.main_vpc.id
   cidr_block        = cidrsubnet(local.vpc_cidr, 4, index(keys(local.supported_azs), local.project_az_map[each.key]) + 2)
