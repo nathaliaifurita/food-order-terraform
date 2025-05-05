@@ -21,11 +21,6 @@ resource "aws_eks_cluster" "eks_cluster" {
     Project = each.key
   }
 
-  # Adicionar a configuração de role para o EKS
-  iam_role {
-    role_arn = var.labRole
-  }
-
   # Optionally, add logging
   enabled_cluster_log_types = [
     "api",
@@ -34,7 +29,7 @@ resource "aws_eks_cluster" "eks_cluster" {
   ]
 }
 
-# IAM Role para o EKS (assumindo que a role seja criada anteriormente)
+# IAM Role para o EKS (sem inline_policy, agora usando aws_iam_role_policy)
 resource "aws_iam_role" "eks_role" {
   name               = "eks-cluster-role"
   assume_role_policy = jsonencode({
@@ -49,30 +44,31 @@ resource "aws_iam_role" "eks_role" {
       }
     ]
   })
-  
-  # Policies necessárias para o EKS
-  inline_policy {
-    name   = "eks-cluster-policy"
-    policy = jsonencode({
-      Version = "2012-10-17",
-      Statement = [
-        {
-          Effect   = "Allow"
-          Action   = [
-            "eks:CreateCluster",
-            "eks:DescribeCluster",
-            "eks:UpdateClusterConfig",
-            "eks:UpdateClusterVersion",
-            "eks:DeleteCluster"
-          ]
-          Resource = "*"
-        },
-        {
-          Effect   = "Allow"
-          Action   = "ec2:DescribeInstances"
-          Resource = "*"
-        }
-      ]
-    })
-  }
+}
+
+# Policy para a Role do EKS
+resource "aws_iam_role_policy" "eks_role_policy" {
+  name   = "eks-cluster-policy"
+  role   = aws_iam_role.eks_role.id
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = [
+          "eks:CreateCluster",
+          "eks:DescribeCluster",
+          "eks:UpdateClusterConfig",
+          "eks:UpdateClusterVersion",
+          "eks:DeleteCluster"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect   = "Allow"
+        Action   = "ec2:DescribeInstances"
+        Resource = "*"
+      }
+    ]
+  })
 }
