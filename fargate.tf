@@ -2,11 +2,6 @@ resource "aws_ecs_cluster" "auth_cluster" {
   name = "auth-cluster"
 }
 
-resource "aws_iam_role_policy_attachment" "ecs_execution_policy" {
-  role       = aws_iam_role.ecs_task_execution_role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-}
-
 resource "aws_ecs_task_definition" "auth_task" {
   family                   = "auth-task"
   requires_compatibilities = ["FARGATE"]
