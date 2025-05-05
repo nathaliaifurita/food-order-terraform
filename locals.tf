@@ -16,6 +16,10 @@ variable "regionDefault" {
   default = "us-east-1"
 }
 
+variable "labRole" {
+  default = "arn:aws:iam::198212171636:role/LabRole"
+}
+
 ###############################
 # LOCALS
 ###############################
