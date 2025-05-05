@@ -8,8 +8,8 @@ resource "aws_ecs_task_definition" "auth_task" {
   network_mode            = "awsvpc"
   cpu                     = 256
   memory                  = 512
-  execution_role_arn      = var.labRole
-  task_role_arn           = var.labRole
+  execution_role_arn      = "arn:aws:iam::198212171636:role/ecsTaskExecutionRole"
+  task_role_arn           = "arn:aws:iam::198212171636:role/ecsTaskExecutionRole"
 
   runtime_platform {
     operating_system_family = "LINUX"
