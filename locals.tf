@@ -43,7 +43,7 @@ variable "policyArnEKSClusterAdminPolicy" {
 ###############################
 
 locals {
-  supported_azs       = ["us-east-1a", "us-east-1b", "us-east-1c", "us-east-1d", "us-east-1f"]
+  supported_azs       = ["us-east-1a", "us-east-1b"]
   project_names       = var.projectNames
   indexed_projects    = zipmap(var.projectNames, range(length(var.projectNames)))
   availability_zones  = data.aws_availability_zones.available.names
@@ -82,32 +82,32 @@ resource "aws_vpc" "main_vpc" {
 ###############################
 
 resource "aws_subnet" "public_subnets" {
-  for_each = local.indexed_projects
+  for_each = {
+    az1 = "us-east-1a"
+    az2 = "us-east-1b"
+  }
 
   vpc_id                  = aws_vpc.main_vpc.id
-  cidr_block              = cidrsubnet(local.vpc_cidr, 4, each.value)
-  availability_zone       = element(local.supported_azs, each.value % length(local.supported_azs))  # Ajustado para usar AZs válidas
+  cidr_block              = cidrsubnet(local.vpc_cidr, 4, index(keys(each.key), each.key))
+  availability_zone       = each.value
   map_public_ip_on_launch = true
 
   tags = {
-    Name                             = "Public Subnet ${each.key}"
-    Environment                      = "public"
-    "kubernetes.io/cluster/${each.key}" = "shared"
-    "kubernetes.io/role/elb"         = "1"
+    Name = "public-${each.key}"
   }
 }
 resource "aws_subnet" "private_subnets" {
-  for_each = local.indexed_projects
+    for_each = {
+    az1 = "us-east-1a"
+    az2 = "us-east-1b"
+  }
 
   vpc_id            = aws_vpc.main_vpc.id
-  cidr_block        = cidrsubnet(local.vpc_cidr, 4, each.value + 10)
-  availability_zone = element(local.supported_azs, each.value % length(local.supported_azs))  # Ajustado para usar AZs válidas
+  cidr_block        = cidrsubnet(local.vpc_cidr, 4, index(keys(each.key), each.key) + 2)
+  availability_zone = each.value
 
   tags = {
-    Name                             = "Private Subnet ${each.key}"
-    Environment                      = "private"
-    "kubernetes.io/cluster/${each.key}" = "shared"
-    "kubernetes.io/role/internal-elb"  = "1"
+    Name = "private-${each.key}"
   }
 }
 
