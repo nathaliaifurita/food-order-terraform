@@ -1,18 +1,12 @@
-# -------------------
-# Internet Gateway
-# -------------------
-resource "aws_internet_gateway" "igw" {
+resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main_vpc.id
 
   tags = {
-    Name = "main-igw"
+    Name = "Main IGW"
   }
 }
 
-# -------------------
-# EIP para o NAT Gateway (1 por VPC)
-# -------------------
-resource "aws_eip" "nat_eip" {
+resource "aws_eip" "nat" {
   vpc = true
 
   tags = {
@@ -20,16 +14,13 @@ resource "aws_eip" "nat_eip" {
   }
 }
 
-# -------------------
-# NAT Gateway (único, em uma subnet pública)
-# -------------------
 resource "aws_nat_gateway" "nat" {
-  allocation_id = aws_eip.nat_eip.id
-  subnet_id     = aws_subnet.public_subnets["az1"].id  # escolha a AZ que quiser
+  allocation_id = aws_eip.nat.id
+  subnet_id     = aws_subnet.public_subnets["az1"].id  # Use uma chave existente do for_each de subnets
 
   tags = {
     Name = "nat-gateway"
   }
 
-  depends_on = [aws_internet_gateway.igw]
+  depends_on = [aws_internet_gateway.main]
 }
