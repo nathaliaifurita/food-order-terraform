@@ -50,7 +50,7 @@ resource "aws_api_gateway_integration" "proxy" {
   type                    = "HTTP_PROXY"
   connection_type         = "VPC_LINK"
   connection_id           = aws_api_gateway_vpc_link.auth.id
-  uri                     = "http://${aws_lb.auth_lb.dns_name}/{proxy}"
+  uri                     = "http://${aws_lb.auth.dns_name}/{proxy}"
 
   request_parameters = {
     "integration.request.path.proxy" = "method.request.path.proxy"
