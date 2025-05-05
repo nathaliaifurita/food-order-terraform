@@ -32,7 +32,7 @@ resource "aws_eks_node_group" "eks-node" {
     aws_eks_cluster.eks_cluster["eks-pedido"],
     aws_eks_cluster.eks_cluster["eks-usuario"],
     aws_eks_cluster.eks_cluster["eks-pagamento"],
-    aws_vpc.main_vpc,
+    data.aws_vpc.main,
     aws_subnet.private_subnets,
     aws_security_group.sg
   ]
