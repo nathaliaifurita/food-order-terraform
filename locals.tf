@@ -152,36 +152,6 @@ resource "aws_lb" "food_order_lb" {
   }
 }
 
-resource "aws_lb_target_group" "food_order_tg" {
-  for_each    = local.indexed_projects
-  name        = "food-order-tg-${each.key}"
-  port        = 80
-  protocol    = "TCP"
-  vpc_id      = data.aws_vpc.main.id
-  target_type = "ip"
-
-  health_check {
-    protocol            = "TCP"
-    port                = "traffic-port"
-    healthy_threshold   = 3
-    unhealthy_threshold = 3
-    interval            = 30
-  }
-}
-
-resource "aws_lb_listener" "http" {
-  for_each = local.indexed_projects
-
-  load_balancer_arn = aws_lb.food_order_lb[each.key].arn
-  port              = 80
-  protocol          = "TCP"
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.food_order_tg[each.key].arn
-  }
-}
-
 ###############################
 # EXTRA: AUTH LB (Application LB, exemplo separado)
 ###############################
