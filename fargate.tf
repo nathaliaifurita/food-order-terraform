@@ -1,3 +1,7 @@
+resource "random_id" "tg_suffix" {
+  byte_length = 2
+}
+
 resource "aws_ecs_cluster" "auth_cluster" {
   name = "auth-cluster"
 }
@@ -35,7 +39,7 @@ resource "aws_ecs_task_definition" "auth_task" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          "awslogs-group"         = "/ecs/auth-service"
+          "awslogs-group"         = aws_cloudwatch_log_group.auth_service.name
           "awslogs-region"        = var.regionDefault
           "awslogs-stream-prefix" = "auth"
         }
@@ -45,7 +49,7 @@ resource "aws_ecs_task_definition" "auth_task" {
 }
 
 resource "aws_cloudwatch_log_group" "auth_service" {
-  name              = "/ecs/auth-service"
+  name              = "/ecs/auth-service-${random_id.log_suffix.hex}"
   retention_in_days = 14
 }
 
@@ -62,7 +66,7 @@ resource "aws_lb" "auth" {
 }
 
 resource "aws_lb_target_group" "auth_tg" {
-  name     = "auth-tg"
+  name     = "auth-tg-${random_id.tg_suffix.hex}"
   port     = 80
   protocol = "HTTP"
   vpc_id   = data.aws_vpc.main.id
