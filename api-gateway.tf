@@ -10,7 +10,7 @@ resource "aws_api_gateway_rest_api" "food_order_api" {
 resource "aws_api_gateway_vpc_link" "auth" {
   name        = "auth-vpc-link"
   description = "VPC Link para o serviço de autenticação"
-  target_arns = [aws_lb.auth_lb.arn]
+  target_arns = [aws_lb.auth.arn]
 }
 
 resource "aws_api_gateway_authorizer" "auth" {
@@ -18,7 +18,7 @@ resource "aws_api_gateway_authorizer" "auth" {
   rest_api_id           = aws_api_gateway_rest_api.food_order_api.id
   type                  = "REQUEST"
   identity_source       = "method.request.header.CPF"
-  authorizer_uri        = "http://${aws_lb.auth_lb.dns_name}/auth"
+  authorizer_uri        = "http://${aws_lb.auth.dns_name}/auth"
   authorizer_credentials = var.labRole
 }
 
