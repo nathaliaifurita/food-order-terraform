@@ -133,39 +133,51 @@ resource "aws_nat_gateway" "nat" {
   depends_on = [aws_internet_gateway.main]
 }
 
+##############################
+# LOAD BALANCER + TARGET GROUP + LISTENER (AUTH)
 ###############################
-# LOAD BALANCERS (NLB por projeto)
-###############################
 
-resource "aws_lb" "food_order_lb" {
-  for_each = local.indexed_projects
-
-  name               = "food-order-lb-${each.key}"
-  internal           = true
-  load_balancer_type = "network"
-  subnets            = [aws_subnet.public_subnets[each.key].id]
-
-  enable_deletion_protection = false
+resource "aws_lb" "auth" {
+  name               = "auth-lb"
+  internal           = false
+  load_balancer_type = "application"
+  subnets            = [for s in aws_subnet.public_subnets : s.id]
 
   tags = {
-    Environment = var.environment
+    Name = "auth-lb"
   }
 }
 
-###############################
-# EXTRA: AUTH LB (Application LB, exemplo separado)
-###############################
+resource "aws_lb_target_group" "auth_tg" {
+  name     = "auth-tg"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = aws_vpc.main_vpc.id
 
-resource "aws_lb" "auth_lb" {
-  name               = "auth-lb"
-  internal           = true
-  load_balancer_type = "application"
-  security_groups    = [aws_security_group.fargate_sg.id]
-  subnets            = [aws_subnet.private_subnets["auth"].id]
-
-  enable_deletion_protection = false
+  health_check {
+    path                = "/"
+    protocol            = "HTTP"
+    matcher             = "200"
+    interval            = 30
+    timeout             = 5
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+  }
 
   tags = {
-    Environment = var.environment
+    Name = "auth-target-group"
   }
+}
+
+resource "aws_lb_listener" "auth" {
+  load_balancer_arn = aws_lb.auth.arn
+  port              = 80
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.auth_tg.arn
+  }
+
+  depends_on = [aws_lb.auth]
 }
