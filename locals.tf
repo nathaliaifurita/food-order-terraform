@@ -69,10 +69,6 @@ locals {
 # DATA SOURCES
 ###############################
 
-data "random_id" "suffix" {
-  byte_length = 2
-}
-
 data "aws_vpc" "main" {
   default = true
 }
@@ -135,5 +131,9 @@ resource "aws_nat_gateway" "nat" {
   }
 
   depends_on = [aws_internet_gateway.main]
+}
+
+resource "random_id" "suffix" {
+  byte_length = 2
 }
 
