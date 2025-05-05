@@ -24,6 +24,14 @@ variable "accessConfig" {
   default = "API_AND_CONFIG_MAP"
 }
 
+variable "principalArn" {
+  default = "arn:aws:iam::198212171636:role/voclabs"
+}
+
+variable "policyArn" {
+  default = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+}
+
 ###############################
 # LOCALS
 ###############################
