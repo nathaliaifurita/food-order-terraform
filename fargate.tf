@@ -1,7 +1,3 @@
-resource "random_id" "suffix" {
-  byte_length = 2
-}
-
 resource "aws_ecs_cluster" "auth_cluster" {
   name = "auth-cluster"
 }
