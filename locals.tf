@@ -133,18 +133,3 @@ resource "aws_nat_gateway" "nat" {
   depends_on = [aws_internet_gateway.main]
 }
 
-##############################
-# LOAD BALANCER + TARGET GROUP + LISTENER (AUTH)
-###############################
-
-resource "aws_lb" "auth" {
-  name               = "auth-lb"
-  internal           = false
-  load_balancer_type = "application"
-  subnets            = [for s in aws_subnet.public_subnets : s.id]
-
-  tags = {
-    Name = "auth-lb"
-  }
-}
-
