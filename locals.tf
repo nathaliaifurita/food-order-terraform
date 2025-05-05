@@ -69,21 +69,12 @@ locals {
 # DATA SOURCES
 ###############################
 
-data "aws_availability_zones" "available" {
-  state = "available"
+data "aws_vpc" "main" {
+  default = true
 }
 
-###############################
-# VPC
-###############################
-
-resource "aws_vpc" "main_vpc" {
-  cidr_block = local.vpc_cidr
-
-  tags = {
-    Name        = "Main VPC"
-    Environment = var.environment
-  }
+data "aws_availability_zones" "available" {
+  state = "available"
 }
 
 ###############################
@@ -93,7 +84,7 @@ resource "aws_vpc" "main_vpc" {
 resource "aws_subnet" "public_subnets" {
   for_each = local.project_names_map
 
-  vpc_id                  = aws_vpc.main_vpc.id
+  vpc_id                  = data.aws_vpc.main.id
   cidr_block              = cidrsubnet(local.vpc_cidr, 4, index(keys(local.supported_azs), local.project_az_map[each.key]))
   availability_zone       = local.supported_azs[local.project_az_map[each.key]]
   map_public_ip_on_launch = true
@@ -106,7 +97,7 @@ resource "aws_subnet" "public_subnets" {
 resource "aws_subnet" "private_subnets" {
   for_each = local.project_names_map
 
-  vpc_id            = aws_vpc.main_vpc.id
+  vpc_id            = data.aws_vpc.main.id
   cidr_block        = cidrsubnet(local.vpc_cidr, 4, index(keys(local.supported_azs), local.project_az_map[each.key]) + 2)
   availability_zone = local.supported_azs[local.project_az_map[each.key]]
 
@@ -116,7 +107,7 @@ resource "aws_subnet" "private_subnets" {
 }
 
 resource "aws_internet_gateway" "main" {
-  vpc_id = aws_vpc.main_vpc.id
+  vpc_id = data.aws_vpc.main.id
 
   tags = {
     Name = "Main IGW"
@@ -166,7 +157,7 @@ resource "aws_lb_target_group" "food_order_tg" {
   name        = "food-order-tg-${each.key}"
   port        = 80
   protocol    = "TCP"
-  vpc_id      = aws_vpc.main_vpc.id
+  vpc_id      = data.aws_vpc.main.id
   target_type = "ip"
 
   health_check {
@@ -213,7 +204,7 @@ resource "aws_lb_target_group" "auth_tg" {
   name        = "auth-tg"
   port        = 4000
   protocol    = "HTTP"
-  vpc_id      = aws_vpc.main_vpc.id
+  vpc_id      = data.aws_vpc.main.id
   target_type = "ip"
 
   health_check {
