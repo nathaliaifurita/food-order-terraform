@@ -15,7 +15,6 @@ resource "aws_ecs_task_definition" "auth_task" {
   memory                  = 512
   execution_role_arn      = var.labRole
   task_role_arn           = var.LabRole
-}
 
   runtime_platform {
     operating_system_family = "LINUX"
