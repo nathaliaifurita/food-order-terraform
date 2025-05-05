@@ -43,7 +43,10 @@ variable "policyArnEKSClusterAdminPolicy" {
 ###############################
 
 locals {
-  supported_azs       = {"us-east-1a", "us-east-1b"}
+  supported_azs = {
+    az1 = "us-east-1a"
+    az2 = "us-east-1b"
+  }
   project_names       = var.projectNames
   indexed_projects    = zipmap(var.projectNames, range(length(var.projectNames)))
   availability_zones  = data.aws_availability_zones.available.names
