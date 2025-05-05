@@ -45,7 +45,7 @@ resource "aws_ecs_task_definition" "auth_task" {
 }
 
 resource "aws_cloudwatch_log_group" "auth_service" {
-  name              = "/ecs/auth-service-${local.random_id.suffix.hex}"
+  name              = "/ecs/auth-service-${random_id.suffix.hex}"
   retention_in_days = 14
 }
 
@@ -62,7 +62,7 @@ resource "aws_lb" "auth" {
 }
 
 resource "aws_lb_target_group" "auth_tg" {
-  name     = "auth-tg-${local.random_id.suffix.hex}"
+  name     = "auth-tg-${random_id.suffix.hex}"
   port     = 80
   protocol = "HTTP"
   vpc_id   = data.aws_vpc.main.id
