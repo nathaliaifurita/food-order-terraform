@@ -69,6 +69,10 @@ locals {
 # DATA SOURCES
 ###############################
 
+data "random_id" "suffix" {
+  byte_length = 2
+}
+
 data "aws_vpc" "main" {
   default = true
 }
