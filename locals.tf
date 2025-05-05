@@ -46,7 +46,17 @@ locals {
   supported_azs = {
     az1 = "us-east-1a"
     az2 = "us-east-1b"
+    az3 = "us-east-1c"
+    az4 = "us-east-1d"
+    az5 = "us-east-1f"
   }
+  project_az_map = {
+    auth      = "az1"
+    pagamento = "az2"
+    cardapio  = "az3"
+    pedido    = "az4"
+    usuario   = "az5"
+    }
   project_names       = var.projectNames
   indexed_projects    = zipmap(var.projectNames, range(length(var.projectNames)))
   availability_zones  = data.aws_availability_zones.available.names
@@ -85,23 +95,24 @@ resource "aws_vpc" "main_vpc" {
 ###############################
 
 resource "aws_subnet" "public_subnets" {
-  for_each = local.indexed_projects
+  for_each = var.projectNames
 
   vpc_id                  = aws_vpc.main_vpc.id
-  cidr_block              = cidrsubnet(local.vpc_cidr, 4, index(keys(local.supported_azs), each.key))
-  availability_zone       = each.value
+  cidr_block              = cidrsubnet(local.vpc_cidr, 4, index(keys(local.supported_azs), local.project_az_map[each.key]))
+  availability_zone       = local.supported_azs[local.project_az_map[each.key]]
   map_public_ip_on_launch = true
 
   tags = {
     Name = "public-${each.key}"
   }
 }
+
 resource "aws_subnet" "private_subnets" {
   for_each = local.indexed_projects
 
   vpc_id            = aws_vpc.main_vpc.id
-  cidr_block        = cidrsubnet(local.vpc_cidr, 4, index(keys(local.supported_azs), each.key) + 2)
-  availability_zone = each.value
+  cidr_block        = cidrsubnet(local.vpc_cidr, 4, index(keys(local.supported_azs), local.project_az_map[each.key]) + 2)
+  availability_zone = local.supported_private_azs[local.project_az_map[each.key]]
 
   tags = {
     Name = "private-${each.key}"
