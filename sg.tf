@@ -66,7 +66,7 @@ resource "aws_security_group" "fargate_sg" {
     from_port   = 4000
     to_port     = 4000
     protocol    = "tcp"
-    cidr_blocks = [aws_vpc.main_vpc.main.cidr_block]
+    cidr_blocks = [aws_vpc.main_vpc.cidr_block]
   }
 
   egress {
