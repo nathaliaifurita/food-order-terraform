@@ -20,6 +20,10 @@ variable "labRole" {
   default = "arn:aws:iam::198212171636:role/LabRole"
 }
 
+variable "accessConfig" {
+  default = "API_AND_CONFIG_MAP"
+}
+
 ###############################
 # LOCALS
 ###############################
