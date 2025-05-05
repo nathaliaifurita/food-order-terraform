@@ -32,6 +32,10 @@ variable "policyArn" {
   default = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
 }
 
+variable "instanceType" {
+  default = "t3.medium"
+}
+
 ###############################
 # LOCALS
 ###############################
