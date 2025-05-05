@@ -1,3 +1,7 @@
+resource "random_id" "suffix" {
+  byte_length = 2
+}
+
 resource "aws_security_group" "sg" {
   for_each    = toset(var.projectNames)
   name        = "SG-${each.key}-${random_id.suffix.hex}"
