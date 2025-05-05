@@ -1,6 +1,6 @@
 resource "aws_security_group" "sg" {
   for_each    = toset(var.projectNames)
-  name        = "SG-${each.key}"
+  name        = "SG-${each.key}-${random_id.suffix.hex}"
   description = "Security Group do Food Order API"
   vpc_id      = data.aws_vpc.main.id
 
