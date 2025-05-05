@@ -28,39 +28,39 @@ resource "aws_eks_node_group" "eks-node" {
   }
 
   depends_on = [
-      aws_eks_cluster.eks_cluster["eks-cardapio"],
-      aws_eks_cluster.eks_cluster["eks-pedido"],
-      aws_eks_cluster.eks_cluster["eks-usuario"],
-      aws_eks_cluster.eks_cluster["eks-pagamento"],
-      aws_vpc.main_vpc,
-      aws_subnet.private_subnets,
-      aws_security_group.sg
+    aws_eks_cluster.eks_cluster["eks-cardapio"],
+    aws_eks_cluster.eks_cluster["eks-pedido"],
+    aws_eks_cluster.eks_cluster["eks-usuario"],
+    aws_eks_cluster.eks_cluster["eks-pagamento"],
+    aws_vpc.main_vpc,
+    aws_subnet.private_subnets,
+    aws_security_group.sg
   ]
 }
 
 resource "aws_launch_template" "eks_launch_template" {
   for_each = toset(var.projectNames)
-  name = "eks-launch-template"
+
+  name = "eks-launch-template-${each.key}" # ← Nome único por projeto
 
   block_device_mappings {
     device_name = "/dev/xvda"
-    
     ebs {
-      volume_size = 50
-      volume_type = "gp2"
+      volume_size           = 50
+      volume_type           = "gp2"
       delete_on_termination = true
     }
   }
 
   network_interfaces {
     associate_public_ip_address = false
-    security_groups            = [aws_security_group.sg[each.key].id]
+    security_groups              = [aws_security_group.sg[each.key].id]
   }
 
   tag_specifications {
     resource_type = "instance"
     tags = {
-      Name = "eks-node-${each.key}"
+      Name                           = "eks-node-${each.key}"
       "kubernetes.io/cluster/${each.key}" = "owned"
     }
   }
