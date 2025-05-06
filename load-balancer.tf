@@ -51,6 +51,7 @@ resource "aws_cloudwatch_log_group" "auth_service" {
 
 # Esta parte de Load Balancer e Listener deve ser removida do local.tf para evitar duplicação
 resource "aws_lb" "food_order_lb" {
+  for_each           = toset(var.projectNames)
   name               = "food-order-lb"
   internal           = false
   load_balancer_type = "network"
