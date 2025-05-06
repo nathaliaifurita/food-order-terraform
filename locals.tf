@@ -37,7 +37,7 @@ variable "policyArnEKSClusterAdminPolicy" {
 }
 
 variable "policyArnApiGatewayAuthorizer" {
-  default = "arn:aws:policy/AmazonAPIGatewayInvokeFullAccess"
+  default = "arn:aws:iam::198212171636:policy/YourCustomPolicyName"
 }
 
 ###############################
