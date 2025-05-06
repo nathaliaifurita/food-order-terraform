@@ -54,6 +54,7 @@ resource "aws_launch_template" "eks_launch_template" {
   }
 
   network_interfaces {
+    for_each = toset(var.projectNames)
     associate_public_ip_address = false
     security_groups              = [aws_security_group.sg[each.key].id]
   }
