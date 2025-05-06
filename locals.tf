@@ -104,7 +104,7 @@ resource "aws_subnet" "private_subnets" {
   for_each = local.project_names_map
 
   vpc_id            = aws_vpc.main.id
-  cidr_block        = cidrsubnet(local.vpc_cidr, 4, index(keys(local.supported_azs), local.project_az_map[each.key]) + 2)
+  cidr_block        = cidrsubnet(local.vpc_cidr, 4, index(keys(local.supported_azs), local.project_az_map[each.key]) + 10)
   availability_zone = local.supported_azs[local.project_az_map[each.key]]
 
   tags = {
