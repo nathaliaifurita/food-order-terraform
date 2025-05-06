@@ -88,10 +88,10 @@ resource "aws_lb_listener" "auth" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.food_order_tg-${random_id.suffix.hex}.arn
+    target_group_arn = aws_lb_target_group.food_order_tg.arn
   }
 
-  depends_on = [aws_lb_target_group.food_order_tg-${random_id.suffix.hex}]
+  depends_on = [aws_lb_target_group.food_order_tg]
 }
 
 resource "aws_ecs_service" "auth_service" {
@@ -110,7 +110,7 @@ resource "aws_ecs_service" "auth_service" {
   }
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.food_order_tg-${random_id.suffix.hex}.arn
+    target_group_arn = aws_lb_target_group.food_order_tg.arn
     container_name   = "auth-container"
     container_port   = 4000
   }
