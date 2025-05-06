@@ -51,30 +51,25 @@ resource "aws_cloudwatch_log_group" "auth_service" {
 
 # Esta parte de Load Balancer e Listener deve ser removida do local.tf para evitar duplicação
 resource "aws_lb" "auth" {
-  name               = "auth-lb"
+  name               = "auth-nlb"
   internal           = false
-  load_balancer_type = "application"
+  load_balancer_type = "network"
   subnets            = [for s in aws_subnet.public_subnets : s.id]
 
   tags = {
-    Name = "auth-lb"
+    Name = "auth-nlb"
   }
 }
 
 resource "aws_lb_target_group" "auth_tg" {
-  name     = "auth-tg-${random_id.suffix.hex}"
-  port     = 80
-  protocol = "HTTP"
-  vpc_id   = aws_vpc.main.id
+  name        = "auth-tg-${random_id.suffix.hex}"
+  port        = 4000                     # Porta que o container escuta
+  protocol    = "TCP"                   # Importante: TCP, não HTTP
+  target_type = "ip"
+  vpc_id      = aws_vpc.main.id
 
   health_check {
-    path                = "/"
-    protocol            = "HTTP"
-    matcher             = "200"
-    interval            = 30
-    timeout             = 5
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
+    protocol = "TCP"                   # Health check simples
   }
 
   tags = {
@@ -84,8 +79,8 @@ resource "aws_lb_target_group" "auth_tg" {
 
 resource "aws_lb_listener" "auth" {
   load_balancer_arn = aws_lb.auth.arn
-  port              = 80
-  protocol          = "HTTP"
+  port              = 4000              # Porta pública
+  protocol          = "TCP"
 
   default_action {
     type             = "forward"
