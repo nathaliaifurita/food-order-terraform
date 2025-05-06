@@ -33,6 +33,8 @@ resource "aws_api_gateway_method" "proxy" {
 }
 
 resource "aws_api_gateway_integration" "load_balancer" {
+  for_each = toset(var.projectNames)
+
   rest_api_id             = aws_api_gateway_rest_api.food_order_api.id
   resource_id             = aws_api_gateway_resource.proxy.id
   http_method             = aws_api_gateway_method.proxy.http_method
@@ -40,7 +42,7 @@ resource "aws_api_gateway_integration" "load_balancer" {
   type                    = "HTTP_PROXY"
   connection_type         = "VPC_LINK"
   connection_id           = [aws_api_gateway_vpc_link.food_order[each.key].id]
-  uri                     = "http://${aws_lb.food_order_lb.dns_name}/{proxy}"
+  uri                     = "http://${aws_lb.food_order_lb[each.key].dns_name}/{proxy}"
 
   request_parameters = {
     "integration.request.path.proxy" = "method.request.path.proxy"
