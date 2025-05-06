@@ -83,7 +83,8 @@ resource "aws_lb_target_group" "food_order_tg" {
 }
 
 resource "aws_lb_listener" "auth" {
-  for_each = var.projectNames
+  for_each = toset(var.projectNames)
+
   load_balancer_arn = [aws_lb.food_order_lb[each.key].arn]
   port              = 4000              # Porta pública
   protocol          = "TCP"

@@ -14,7 +14,8 @@ resource "aws_api_gateway_resource" "proxy" {
 }
 
 resource "aws_api_gateway_vpc_link" "food_order" {
-  for_each = var.projectNames
+  for_each = toset(var.projectNames)
+
   name        = "food-order-vpc-link"
   description = "VPC Link para o Food Order API"
   target_arns = [aws_lb.food_order_lb[each.key].arn]
