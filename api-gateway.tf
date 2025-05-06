@@ -16,7 +16,7 @@ resource "aws_api_gateway_resource" "proxy" {
 resource "aws_api_gateway_vpc_link" "food_order" {
   name        = "food-order-vpc-link"
   description = "VPC Link para o Food Order API"
-  target_arns = [aws_lb.food_order_lb.arn]
+  target_arns = [aws_lb.food_order_lb[each.key].arn]
 }
 
 resource "aws_api_gateway_method" "proxy" {
@@ -37,7 +37,7 @@ resource "aws_api_gateway_integration" "load_balancer" {
   integration_http_method = "ANY"
   type                    = "HTTP_PROXY"
   connection_type         = "VPC_LINK"
-  connection_id           = aws_api_gateway_vpc_link.food_order.id
+  connection_id           = [aws_api_gateway_vpc_link.food_order[each.key].id]
   uri                     = "http://${aws_lb.food_order_lb.dns_name}/{proxy}"
 
   request_parameters = {
