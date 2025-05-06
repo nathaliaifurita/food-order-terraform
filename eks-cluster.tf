@@ -28,3 +28,38 @@ resource "aws_eks_cluster" "eks_cluster" {
     "authenticator"
   ]
 }
+
+resource "aws_eks_addon" "kube_proxy" {
+  for_each     = aws_eks_cluster.eks_cluster
+  cluster_name = each.value.name
+  addon_name   = "kube-proxy"
+}
+
+resource "aws_eks_addon" "vpc_cni" {
+  for_each     = aws_eks_cluster.eks_cluster
+  cluster_name = each.value.name
+  addon_name   = "vpc-cni"
+}
+
+resource "aws_eks_addon" "eks_node_monitoring_agent" {
+  for_each     = aws_eks_cluster.eks_cluster
+  cluster_name = each.value.name
+  addon_name   = "eks-node-monitoring-agent"
+}
+
+resource "aws_eks_addon" "coredns" {
+  for_each      = aws_eks_cluster.eks_cluster
+  cluster_name  = each.value.name
+  addon_name    = "coredns"
+  addon_version = "v1.11.4-eksbuild.2"
+
+  depends_on = [
+    aws_eks_node_group.eks_node[each.key]
+  ]
+}
+
+resource "aws_eks_addon" "eks_pod_identity_agent" {
+  for_each     = aws_eks_cluster.eks_cluster
+  cluster_name = each.value.name
+  addon_name   = "eks-pod-identity-agent"
+}
