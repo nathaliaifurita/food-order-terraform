@@ -36,6 +36,10 @@ variable "policyArnEKSClusterAdminPolicy" {
   default = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
 }
 
+variable "policyArnApiGatewayAuthorizer" {
+  default = "arn:aws:iam::198212171636:policy/apigw-authorizer-policy"
+}
+
 ###############################
 # LOCALS
 ###############################

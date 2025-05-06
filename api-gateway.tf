@@ -19,7 +19,7 @@ resource "aws_api_gateway_authorizer" "auth" {
   type                  = "REQUEST"
   identity_source       = "method.request.header.CPF"
   authorizer_uri        = "http://${aws_lb.auth.dns_name}/auth"
-  authorizer_credentials = var.labRole
+  authorizer_credentials = var.policyArnApiGatewayAuthorizer
 }
 
 # Recurso proxy para todas as rotas
