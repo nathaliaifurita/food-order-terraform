@@ -54,7 +54,7 @@ resource "aws_eks_addon" "coredns" {
   addon_version = "v1.11.4-eksbuild.2"
 
   depends_on = [
-    aws_eks_node_group.eks_node[each.key]
+    aws_eks_node_group.eks_node
   ]
 }
 
