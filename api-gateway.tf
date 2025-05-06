@@ -41,7 +41,7 @@ resource "aws_api_gateway_integration" "load_balancer" {
   integration_http_method = "ANY"
   type                    = "HTTP_PROXY"
   connection_type         = "VPC_LINK"
-  connection_id           = [aws_api_gateway_vpc_link.food_order[each.key].id]
+  connection_id           = aws_api_gateway_vpc_link.food_order[each.key].id
   uri                     = "http://${aws_lb.food_order_lb[each.key].dns_name}/{proxy}"
 
   request_parameters = {
