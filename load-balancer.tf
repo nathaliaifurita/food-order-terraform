@@ -56,7 +56,7 @@ resource "aws_lb" "food_order_lb" {
   load_balancer_type = "network"
   subnets            = [for s in aws_subnet.public_subnets : s.id]
 
-  security_groups    = [aws_security_group.sg.id]
+  security_groups    = [aws_security_group.sg[each.key].id]
 
   enable_deletion_protection = false
 
