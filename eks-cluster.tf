@@ -54,11 +54,11 @@ resource "aws_eks_addon" "coredns" {
   addon_version = "v1.11.4-eksbuild.2"
 
   depends_on = [
-    aws_eks_node_group.eks_node["eks-node-cardapio"],
-    aws_eks_node_group.eks_node["eks-node-pedido"],
-    aws_eks_node_group.eks_node["eks-node-usuario"],
-    aws_eks_node_group.eks_node["eks-node-pagamento"],
-    aws_eks_node_group.eks_node["eks-node-auth"],
+    aws_eks_node_group.eks-node["eks-node-cardapio"],
+    aws_eks_node_group.eks-node["eks-node-pedido"],
+    aws_eks_node_group.eks-node["eks-node-usuario"],
+    aws_eks_node_group.eks-node["eks-node-pagamento"],
+    aws_eks_node_group.eks-node["eks-node-auth"],
   ]
 }
 
