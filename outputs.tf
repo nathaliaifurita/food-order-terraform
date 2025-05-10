@@ -11,7 +11,7 @@ output "eks_cluster_endpoint" {
 }
 
 output "eks_cluster_certificate_authority_0_data" {
-  value = aws_eks_cluster.eks_cluster.[each.key].certificate_authority[0].data
+  value = aws_eks_cluster.eks_cluster[each.key].certificate_authority[0].data
 }
 
 output "private_subnet_ids" {
