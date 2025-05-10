@@ -74,7 +74,7 @@ resource "aws_subnet" "private_subnets" {
   count             = 2
   vpc_id            = aws_vpc.main.id
   cidr_block        = cidrsubnet("172.31.48.0/20", 4, count.index + 2)
-  availability_zone = element(["us-east-1a", "us-east-1b"], count.index)
+  availability_zone = element(["us-east-1a", "us-east-1b", "us-east-1c"], count.index)
 
   tags = merge(
     {
