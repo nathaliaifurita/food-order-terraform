@@ -60,12 +60,14 @@ resource "aws_subnet" "public_subnets" {
   availability_zone       = element(["us-east-1a", "us-east-1b"], count.index)
   map_public_ip_on_launch = true
 
-  tags = merge {
-    Name        = "Public Subnet ${count.index + 1}"
-    Environment = "public"
-    "kubernetes.io/role/elb" = "1"
-  },
-  { for name in var.projectNames : "kubernetes.io/cluster/${name}" => "shared" }
+  tags = merge (
+    {
+      Name        = "Public Subnet ${count.index + 1}"
+      Environment = "public"
+      "kubernetes.io/role/elb" = "1"
+    },
+    { for name in var.projectNames : "kubernetes.io/cluster/${name}" => "shared" }
+  )
 }
 
 resource "aws_subnet" "private_subnets" {
