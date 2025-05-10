@@ -60,12 +60,12 @@ resource "aws_subnet" "public_subnets" {
   availability_zone       = element(["us-east-1a", "us-east-1b"], count.index)
   map_public_ip_on_launch = true
 
-  tags = {
+  tags = merge {
     Name        = "Public Subnet ${count.index + 1}"
     Environment = "public"
-    { for name in var.projectNames : "kubernetes.io/cluster/${name}" => "shared" }
-    "kubernetes.io/role/elb"                   = "1"
-  }
+    "kubernetes.io/role/elb" = "1"
+  },
+  { for name in var.projectNames : "kubernetes.io/cluster/${name}" => "shared" }
 }
 
 resource "aws_subnet" "private_subnets" {
@@ -74,12 +74,14 @@ resource "aws_subnet" "private_subnets" {
   cidr_block        = cidrsubnet("172.31.0.0/16", 4, count.index)
   availability_zone = element(["us-east-1a", "us-east-1b"], count.index)
 
-  tags = {
-    Name        = "Private Subnet ${count.index + 1}"
-    Environment = "private"
+  tags = merge(
+    {
+      Name                              = "Private Subnet ${count.index + 1}"
+      Environment                       = "private"
+      "kubernetes.io/role/internal-elb" = "1"
+    },
     { for name in var.projectNames : "kubernetes.io/cluster/${name}" => "shared" }
-    "kubernetes.io/role/internal-elb"         = "1"
-  }
+  )
 }
 
 resource "aws_internet_gateway" "main" {
