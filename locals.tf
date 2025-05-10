@@ -40,7 +40,7 @@ variable "policyArnEKSClusterAdminPolicy" {
 # LOCALS
 ###############################
 resource "aws_vpc" "main" {
-  cidr_block           = "172.31.48.0/20"
+  cidr_block           = "10.0.0.0/16"
   enable_dns_support   = true
   enable_dns_hostnames = true
 
@@ -56,7 +56,7 @@ resource "aws_vpc" "main" {
 resource "aws_subnet" "public_subnets" {
   count                   = 2
   vpc_id                  = aws_vpc.main.id
-  cidr_block              = cidrsubnet("172.31.48.0/20", 4, count.index)
+  cidr_block              = cidrsubnet("10.0.1.0/24", 4, count.index)
   availability_zone       = element(["us-east-1a", "us-east-1b"], count.index)
   map_public_ip_on_launch = true
 
@@ -73,8 +73,8 @@ resource "aws_subnet" "public_subnets" {
 resource "aws_subnet" "private_subnets" {
   count             = 2
   vpc_id            = aws_vpc.main.id
-  cidr_block        = cidrsubnet("172.31.48.0/20", 4, count.index + 2)
-  availability_zone = element(["us-east-1a", "us-east-1b", "us-east-1c", "us-east-d", "us-east-f"], count.index)
+  cidr_block        = cidrsubnet("10.0.2.0/24", 4, count.index + 2)
+  availability_zone = element(["us-east-1c", "us-east-d"], count.index)
 
   tags = merge(
     {
@@ -91,14 +91,6 @@ resource "aws_internet_gateway" "main" {
 
   tags = {
     Name = "Main IGW"
-  }
-}
-
-resource "aws_eip" "nat" {
-  vpc = true
-
-  tags = {
-    Name = "nat-eip"
   }
 }
 
