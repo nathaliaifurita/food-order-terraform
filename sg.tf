@@ -1,7 +1,7 @@
 resource "aws_security_group" "sg" {
   name        = "SG-food-order"
   description = "Security Group do Food Order API"
-  vpc_id      = aws_vpc.main_vpc.id
+  vpc_id      = aws_vpc.main.id
 
   # Permitir tráfego do API Gateway para o Load Balancer
   ingress {
