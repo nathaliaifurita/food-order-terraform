@@ -39,9 +39,6 @@ variable "policyArnEKSClusterAdminPolicy" {
 ###############################
 # LOCALS
 ###############################
-
-  project_names_map    = zipmap(["auth", "pagamento", "pedido", "cardapio", "usuario"], ["auth", "pagamento", "pedido", "cardapio", "usuario"])
-
 resource "aws_vpc" "main" {
   cidr_block           = "10.0.0.0/16"
   enable_dns_support   = true
@@ -69,8 +66,6 @@ resource "aws_subnet" "public_subnets" {
 }
 
 resource "aws_subnet" "private_subnets" {
-  for_each = local.project_names_map
-
   vpc_id            = aws_vpc.main.id
   cidr_block        = cidrsubnet("172.31.0.0/16", 4, count.index)
   availability_zone = element(["us-east-1a", "us-east-1b"], count.index)
