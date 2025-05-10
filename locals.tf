@@ -41,8 +41,6 @@ variable "policyArnEKSClusterAdminPolicy" {
 ###############################
 
   project_names_map    = zipmap(["auth", "pagamento", "pedido", "cardapio", "usuario"], ["auth", "pagamento", "pedido", "cardapio", "usuario"])
-  indexed_projects      = zipmap(var.projectNames, range(length(var.projectNames)))
-  vpc_cidr              = "10.0.0.0/16"
 
 resource "aws_vpc" "main" {
   cidr_block           = "10.0.0.0/16"
