@@ -1,8 +1,8 @@
 resource "aws_eks_node_group" "eks-node" {
-  for_each = toset(var.projectNames)
+  count = length(var.projectNames)
 
-  cluster_name    = aws_eks_cluster.eks_cluster[each.key].name
-  node_group_name = "eks-node-${each.key}"
+  cluster_name    = aws_eks_cluster.eks_cluster[count.index].name
+  node_group_name = "eks-node-${var.projectNames[count.index]}"
   node_role_arn   = var.labRole
   subnet_ids      = aws_subnet.private_subnets[*].id
   instance_types  = [var.instanceType]
