@@ -73,8 +73,8 @@ resource "aws_subnet" "public_subnets" {
 resource "aws_subnet" "private_subnets" {
   count             = 2
   vpc_id            = aws_vpc.main.id
-  cidr_block        = cidrsubnet("10.0.2.0/24", 4, count.index + 2)
-  availability_zone = element(["us-east-1c", "us-east-d"], count.index)
+  cidr_block        = cidrsubnet("172.31.48.0/20", 4, count.index + 2)
+  availability_zone = element(["us-east-1a", "us-east-1b"], count.index)
 
   tags = merge(
     {
@@ -91,6 +91,14 @@ resource "aws_internet_gateway" "main" {
 
   tags = {
     Name = "Main IGW"
+  }
+}
+
+resource "aws_eip" "nat" {
+  vpc = true
+
+  tags = {
+    Name = "nat-eip"
   }
 }
 
