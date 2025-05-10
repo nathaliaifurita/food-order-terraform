@@ -5,7 +5,7 @@ resource "aws_eks_cluster" "eks_cluster" {
   role_arn = var.labRole  # Certifique-se de que essa role tenha as permissões necessárias para o EKS
 
   vpc_config {
-    subnet_ids            = [for subnet in values(aws_subnet.private_subnets) : subnet.id]
+    subnet_ids         = aws_subnet.private_subnets[*].id
     security_group_ids    = [aws_security_group.sg.id]
     endpoint_public_access = true  # Defina como true se você precisar acessar o endpoint do EKS publicamente
     endpoint_private_access = false # Altere conforme necessário para acessar privadamente
