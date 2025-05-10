@@ -17,14 +17,18 @@ resource "aws_eks_node_group" "eks-node" {
     max_unavailable = 1
   }
 
-  tags = {
-    "kubernetes.io/cluster/${each.key}" = "owned"
-    Environment = var.environment
-  }
+  tags = merge(
+    {
+      Environment = var.environment
+    },
+    {
+      for name in var.projectNames : "kubernetes.io/cluster/${name}" => "owned"
+    }
+  ) 
 
   launch_template {
-    name    = aws_launch_template.eks_launch_template[each.key].name
-    version = aws_launch_template.eks_launch_template[each.key].latest_version
+    name    = aws_launch_template.eks_launch_template[count.index].name
+    version = aws_launch_template.eks_launch_template[count.index].latest_version
   }
 
   depends_on = [
@@ -40,9 +44,9 @@ resource "aws_eks_node_group" "eks-node" {
 }
 
 resource "aws_launch_template" "eks_launch_template" {
-  for_each = toset(var.projectNames)
+  count = length(var.projectNames)
 
-  name = "eks-launch-template-${each.key}" # ← Nome único por projeto
+  name = "eks-launch-${var.projectNames[count.index]}" # ← Nome único por projeto
 
   block_device_mappings {
     device_name = "/dev/xvda"
@@ -61,8 +65,8 @@ resource "aws_launch_template" "eks_launch_template" {
   tag_specifications {
     resource_type = "instance"
     tags = {
-      Name                           = "eks-node-${each.key}"
-      "kubernetes.io/cluster/${each.key}" = "owned"
+      Name                                = "eks-node-${var.projectNames[count.index]}"
+      "kubernetes.io/cluster/${var.projectNames[count.index]}" = "owned"
     }
   }
 
@@ -74,9 +78,9 @@ Content-Type: multipart/mixed; boundary="==BOUNDARY=="
 Content-Type: text/x-shellscript; charset="us-ascii"
 
 #!/bin/bash
-/etc/eks/bootstrap.sh ${aws_eks_cluster.eks_cluster[each.key].name} \
-  --b64-cluster-ca ${aws_eks_cluster.eks_cluster[each.key].certificate_authority[0].data} \
-  --apiserver-endpoint ${aws_eks_cluster.eks_cluster[each.key].endpoint}
+/etc/eks/bootstrap.sh ${aws_eks_cluster.eks_cluster[count.index].name} \
+  --b64-cluster-ca ${aws_eks_cluster.eks_cluster[count.index].certificate_authority[0].data} \
+  --apiserver-endpoint ${aws_eks_cluster.eks_cluster[count.index].endpoint}
 
 --==BOUNDARY==--
 EOF

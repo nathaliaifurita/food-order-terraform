@@ -18,7 +18,7 @@ resource "aws_eks_cluster" "eks_cluster" {
 
   # Tags para identificar o cluster
   tags = {
-    Project = each.key
+    Project = var.projectNames[count.index]
   }
 
   # Optionally, add logging
