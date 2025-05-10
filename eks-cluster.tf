@@ -1,5 +1,5 @@
 resource "aws_eks_cluster" "eks_cluster" {
-  for_each = toset(var.projectNames)
+  count = length(var.projectNames)
 
   name     = "eks-${each.key}"
   role_arn = var.labRole  # Certifique-se de que essa role tenha as permissões necessárias para o EKS
