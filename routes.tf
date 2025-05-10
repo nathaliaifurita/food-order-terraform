@@ -25,6 +25,7 @@ resource "aws_route_table_association" "public" {
 # Private Route Table
 # -------------------
 resource "aws_route_table" "private" {
+  count  = 2
   vpc_id = aws_vpc.main.id
 
   route {
