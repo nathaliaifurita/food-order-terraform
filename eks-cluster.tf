@@ -31,25 +31,25 @@ resource "aws_eks_cluster" "eks_cluster" {
 
 resource "aws_eks_addon" "kube_proxy" {
   count = length(var.projectNames)
-  cluster_name  = aws_eks_cluster.eks_cluster[*].name
+  cluster_name  = aws_eks_cluster.eks_cluster[count.index].name
   addon_name   = "kube-proxy"
 }
 
 resource "aws_eks_addon" "vpc_cni" {
   count = length(var.projectNames)
-  cluster_name  = aws_eks_cluster.eks_cluster[*].name
+  cluster_name  = aws_eks_cluster.eks_cluster[count.index].name
   addon_name   = "vpc-cni"
 }
 
 resource "aws_eks_addon" "eks_node_monitoring_agent" {
   count = length(var.projectNames)
-  cluster_name  = aws_eks_cluster.eks_cluster[*].name
+  cluster_name  = aws_eks_cluster.eks_cluster[count.index].name
   addon_name   = "eks-node-monitoring-agent"
 }
 
 resource "aws_eks_addon" "coredns" {
   count = length(var.projectNames)
-  cluster_name  = aws_eks_cluster.eks_cluster[*].name
+  cluster_name  = aws_eks_cluster.eks_cluster[count.index].name
   addon_name    = "coredns"
   addon_version = "v1.11.4-eksbuild.2"
 
@@ -64,6 +64,6 @@ resource "aws_eks_addon" "coredns" {
 
 resource "aws_eks_addon" "eks_pod_identity_agent" {
   count = length(var.projectNames)
-  cluster_name  = aws_eks_cluster.eks_cluster[*].name
+  cluster_name  = aws_eks_cluster.eks_cluster[count.index].name
   addon_name   = "eks-pod-identity-agent"
 }
