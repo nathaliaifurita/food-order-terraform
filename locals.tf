@@ -103,6 +103,7 @@ resource "aws_eip" "nat" {
 }
 
 resource "aws_nat_gateway" "nat" {
+  count = 3
   allocation_id = "${aws_eip.nat.id}"
   subnet_id     = aws_subnet.public_subnets[count.index].id
 
