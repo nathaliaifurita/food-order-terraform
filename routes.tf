@@ -17,7 +17,7 @@ resource "aws_route_table" "public" {
 # Associa subnets públicas à public RT
 resource "aws_route_table_association" "public" {
   count          = 2
-  subnet_id      = aws_subnet.public_subnets[count.index].id
+  subnet_id      = [aws_subnet.private_subnets[count.index].id]
   route_table_id = aws_route_table.private[count.index].id
 }
 
@@ -41,7 +41,7 @@ resource "aws_route_table" "private" {
 # Associa subnets privadas à private RT
 resource "aws_route_table_association" "private" {
   count          = 2
-  subnet_id      = aws_subnet.private_subnets[count.index].id
+  subnet_id      = [aws_subnet.private_subnets[count.index].id]
   route_table_id = aws_route_table.private[count.index].id
 }
 
