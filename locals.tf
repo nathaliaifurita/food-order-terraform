@@ -105,7 +105,7 @@ resource "aws_eip" "nat" {
 resource "aws_nat_gateway" "nat" {
   count = 2
   allocation_id = aws_eip.nat.id
-  subnet_id     = [aws_subnet.private_subnets[count.index].id]
+  subnet_id     = [aws_subnet.public_subnets[count.index].id]
 
   tags = {
     Name = "nat-gateway"
