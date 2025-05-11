@@ -54,7 +54,7 @@ resource "aws_vpc" "main" {
 ###############################
 
 resource "aws_subnet" "public_subnets" {
-  count                   = 2
+  count                   = 3
   vpc_id                  = aws_vpc.main.id
   cidr_block              = cidrsubnet("10.0.1.0/24", 4, count.index)
   availability_zone       = element(["us-east-1a", "us-east-1b", "us-east-1c"], count.index)
@@ -71,7 +71,7 @@ resource "aws_subnet" "public_subnets" {
 }
 
 resource "aws_subnet" "private_subnets" {
-  count             = 2
+  count             = 3
   vpc_id            = aws_vpc.main.id
   cidr_block        = cidrsubnet("10.0.2.0/24", 4, count.index + 2)
   availability_zone = element(["us-east-1a", "us-east-1b", "us-east-1c"], count.index)
