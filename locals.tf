@@ -95,7 +95,7 @@ resource "aws_internet_gateway" "main" {
 }
 
 resource "aws_eip" "nat" {
-  vpc = true
+  domain = "vpc"
 
   tags = {
     Name = "nat-eip"
@@ -103,9 +103,10 @@ resource "aws_eip" "nat" {
 }
 
 resource "aws_nat_gateway" "nat" {
-  count = 2
+  count         = 2
   allocation_id = aws_eip.nat.id
   subnet_id     = aws_subnet.public_subnets[count.index].id
+  depends_on    = [aws_internet_gateway.main]
 
   tags = {
     Name = "nat-gateway"
