@@ -4,7 +4,7 @@ resource "aws_eks_node_group" "eks-node" {
   cluster_name    = aws_eks_cluster.eks_cluster[count.index].name
   node_group_name = "eks-node-${var.projectNames[count.index]}"
   node_role_arn   = var.labRole
-  subnet_ids      = [aws_subnet.private_subnets[count.index].id]
+  subnet_ids      = [for subnet in aws_subnet.private_subnets : subnet.id]
   instance_types  = [var.instanceType]
 
   scaling_config {
