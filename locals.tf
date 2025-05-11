@@ -95,11 +95,9 @@ resource "aws_internet_gateway" "main" {
 }
 
 resource "aws_eip" "nat" {
-  vpc = true
-
-  tags = {
-    Name = "nat-eip"
-  }
+  count  = length(var.public_subnet_cidrs)
+  domain = "vpc"  # substitui o vpc = true
+  depends_on = [aws_internet_gateway.gw]
 }
 
 resource "aws_nat_gateway" "nat" {
