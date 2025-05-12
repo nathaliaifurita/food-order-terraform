@@ -55,8 +55,8 @@ jobs:
       - name: BuildAndPush Dockerfile - Food-Order-Pedido
         run: |
           docker build -t vilacaro/pedido . && \
-          docker tag vilacaro/pedido:v1 759212231558.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/vilacaro/pedido:latest && \
-          docker push 759212231558.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/vilacaro/pedido
+          docker tag vilacaro/pedido:v1 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/vilacaro/pedido:latest && \
+          docker push 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/vilacaro/pedido
 
       - name: Update Kube Config
         run: |
