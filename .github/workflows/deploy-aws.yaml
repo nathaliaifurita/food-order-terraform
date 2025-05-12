@@ -3,7 +3,7 @@ name: Deploy AWS Production - FOOD-ORDER-API
 on:
   push:
     branches:
-      - main
+
 
 env:
   AWS_REGION: us-east-1
@@ -33,12 +33,31 @@ jobs:
           --password-stdin \
           759212231558.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
 
-      - name: BuildAndPush Dockerfile
+      - name: BuildAndPush Dockerfile - Food-Order-Usuarios
         run: |
           docker build -t vilacaro/api . && \
-          docker tag vilacaro/api:v1 759212231558.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/vilacaro/api:v1 && \
-          docker push 759212231558.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/vilacaro/api
-    
+          docker tag vilacaro/api:v1 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/vilacaro/api:v1 && \
+          docker push 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/vilacaro/api
+      
+      - name: BuildAndPush Dockerfile - Food-Order-Cardapio
+        run: |
+          docker build -t japamanoel/foodorder_cardapio . && \
+          docker tag japamanoel/foodorder_cardapio:v1 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/japamanoel/foodorder_cardapio:latest && \
+          docker push 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/japamanoel/foodorder_cardapio
+
+      - name: BuildAndPush Dockerfile - Food-Order-Pagamento
+        run: |
+          docker build -t diegogl12/food-order-pagamento . && \
+          docker tag diegogl12/food-order-pagamento:v1 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/diegogl12/food-order-pagamento:latest && \
+          docker push 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/diegogl12/food-order-pagamento
+   
+
+      - name: BuildAndPush Dockerfile - Food-Order-Pedido
+        run: |
+          docker build -t vilacaro/pedido . && \
+          docker tag vilacaro/pedido:v1 759212231558.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/vilacaro/pedido:latest && \
+          docker push 759212231558.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/vilacaro/pedido
+
       - name: Update Kube Config
         run: |
           aws eks update-kubeconfig \
@@ -54,5 +73,4 @@ jobs:
       - name: Kube Apply
         run: |
           kubectl apply -f k8s/api-pod.yaml
-          kubectl apply -f k8s/api-service.yaml
           kubectl apply -f k8s/api-deployment.yaml

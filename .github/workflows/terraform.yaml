@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - fase_4c
 
 env:
   REGION_DEFAULT: us-east-1
