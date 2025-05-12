@@ -7,10 +7,6 @@ resource "aws_vpc" "main_vpc" {
   }
 }
 
-locals {
-  vpc_id = data.aws_vpc.main.id
-}
-
 resource "aws_subnet" "public_subnets" {
   count                   = 2
   vpc_id                  = aws_vpc.main_vpc.id
