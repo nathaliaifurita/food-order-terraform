@@ -3,7 +3,8 @@ on:
   push:
     branches:
       - main
-      - fase_4c
+      - fase4_d
+
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:

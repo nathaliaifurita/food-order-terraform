@@ -3,7 +3,8 @@ name: Deploy AWS Production - FOOD-ORDER-API
 on:
   push:
     branches:
-
+    - main
+    - fase4_d
 
 env:
   AWS_REGION: us-east-1
