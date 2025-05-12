@@ -6,7 +6,79 @@ metadata:
     app: api-pod
 spec:
   containers:
-    - name: api-pod-config
+    - name: api-pod-cardapio-config
+      image: japamanoel/foodorder_cardapio:latest
+      ports:
+        - containerPort: 9000
+      env:
+        - name: ConnectionStrings__DefaultConnection
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: DB_CONNECTION_STRING
+        - name: ASPNETCORE_URLS
+          value: "http://0.0.0.0:9000"
+      command: 
+        - "sh"
+        - "-c"
+        - |
+          echo "Iniciando API..." &&
+          dotnet FoodOrder.API.dll
+    - name: api-pod-pagamento-config
+      image: diegogl12/food-order-pagamento:latest
+      ports:
+        - containerPort: 9000
+      env:
+        - name: ConnectionStrings__DefaultConnection
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: DB_CONNECTION_STRING
+        - name: ASPNETCORE_URLS
+          value: "http://0.0.0.0:9000"
+      command: 
+        - "sh"
+        - "-c"
+        - |
+          echo "Iniciando API..." &&
+          dotnet FoodOrder.API.dll
+    - name: api-pod-pedido-config
+      image: vilacaro/pedido:latest
+      ports:
+        - containerPort: 9000
+      env:
+        - name: ConnectionStrings__DefaultConnection
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: DB_CONNECTION_STRING
+        - name: ASPNETCORE_URLS
+          value: "http://0.0.0.0:9000"
+      command: 
+        - "sh"
+        - "-c"
+        - |
+          echo "Iniciando API..." &&
+          dotnet FoodOrder.API.dll
+    - name: api-pod-usuarios
+      image: vilacaro/api:v1
+      ports:
+        - containerPort: 9000
+      env:
+        - name: ConnectionStrings__DefaultConnection
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: DB_CONNECTION_STRING
+        - name: ASPNETCORE_URLS
+          value: "http://0.0.0.0:9000"
+      command: 
+        - "sh"
+        - "-c"
+        - |
+          echo "Iniciando API..." &&
+          dotnet FoodOrder.API.dll
+
       image: vilacaro/api:v1
       ports:
         - containerPort: 9000
