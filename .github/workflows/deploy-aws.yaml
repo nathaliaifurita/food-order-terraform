@@ -9,9 +9,23 @@ on:
 env:
   AWS_REGION: us-east-1
   CLUSTER_NAME: EKS-FOOD-ORDER-API-CLUSTER
+  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
 jobs:
+  sonarqube:
+    name: SonarQube
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   deploy-production:
+    needs: sonarqube
     name: Deploy EKS Food Order Production
     runs-on: ubuntu-latest
     steps:
@@ -36,27 +50,27 @@ jobs:
 
       - name: BuildAndPush Dockerfile - Food-Order-Usuarios
         run: |
-          docker build -t vilacaro/api . && \
+          docker build -t vilacaro/api:v1 ./usuarios && \
           docker tag vilacaro/api:v1 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/vilacaro/api:v1 && \
-          docker push 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/vilacaro/api
+          docker push 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/vilacaro/api:v1
       
       - name: BuildAndPush Dockerfile - Food-Order-Cardapio
         run: |
-          docker build -t japamanoel/foodorder_cardapio . && \
+          docker build -t japamanoel/foodorder_cardapio:latest ./cardapio && \
           docker tag japamanoel/foodorder_cardapio:v1 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/japamanoel/foodorder_cardapio:latest && \
-          docker push 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/japamanoel/foodorder_cardapio
+          docker push 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/japamanoel/foodorder_cardapio:latest
 
       - name: BuildAndPush Dockerfile - Food-Order-Pagamento
         run: |
-          docker build -t diegogl12/food-order-pagamento . && \
+          docker build -t diegogl12/food-order-pagamento:latest ./pagamento && \
           docker tag diegogl12/food-order-pagamento:v1 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/diegogl12/food-order-pagamento:latest && \
-          docker push 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/diegogl12/food-order-pagamento
+          docker push 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/diegogl12/food-order-pagamento:latest
    
       - name: BuildAndPush Dockerfile - Food-Order-Pedido
         run: |
-          docker build -t vilacaro/pedido . && \
+          docker build -t vilacaro/pedido:latest ./pedido && \
           docker tag vilacaro/pedido:v1 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/vilacaro/pedido:latest && \
-          docker push 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/vilacaro/pedido
+          docker push 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/vilacaro/pedido:latest
 
       - name: Update Kube Config
         run: |
@@ -72,5 +86,4 @@ jobs:
 
       - name: Kube Apply
         run: |
-          kubectl apply -f k8s/api-pod.yaml
-          kubectl apply -f k8s/api-deployment.yaml
+          kubectl apply -f k8s/
