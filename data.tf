@@ -7,10 +7,6 @@ resource "aws_vpc" "main_vpc" {
   }
 }
 
-data "aws_vpc" "main" {
-  default = true  # ou use tags para identificar sua VPC específica
-}
-
 locals {
   vpc_id = data.aws_vpc.main.id
 }
