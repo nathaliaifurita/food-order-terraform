@@ -12,7 +12,7 @@ resource "aws_ecr_repository" "foodorder_cardapio" {
 }
 
 resource "aws_ecr_repository" "foodorder_usuarios" {
-  name = "vilacaro/api:latest"  # use exatamente o nome que vai usar no push
+  name = "vilacaro/api"  # use exatamente o nome que vai usar no push
 
   image_scanning_configuration {
     scan_on_push = true
@@ -25,7 +25,7 @@ resource "aws_ecr_repository" "foodorder_usuarios" {
 }
 
 resource "aws_ecr_repository" "foodorder_pedido" {
-  name = "vilacaro/pedido:latest"  # use exatamente o nome que vai usar no push
+  name = "vilacaro/pedido"  # use exatamente o nome que vai usar no push
 
   image_scanning_configuration {
     scan_on_push = true
@@ -38,7 +38,7 @@ resource "aws_ecr_repository" "foodorder_pedido" {
 }
 
 resource "aws_ecr_repository" "foodorder_pagamento" {
-  name = "diegogl12/food-order-pagamento:latest"  # use exatamente o nome que vai usar no push
+  name = "diegogl12/food-order-pagamento"  # use exatamente o nome que vai usar no push
 
   image_scanning_configuration {
     scan_on_push = true
