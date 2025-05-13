@@ -37,7 +37,7 @@ jobs:
       - name: BuildAndPush Dockerfile - Food-Order-Usuarios
         run: |
           docker build -t vilacaro/api . && \
-          docker tag vilacaro/api:v1 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/vilacaro/api:v1 && \
+          docker tag vilacaro/api:latest 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/vilacaro/api:latest && \
           docker push 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/vilacaro/api
       
       - name: BuildAndPush Dockerfile - Food-Order-Cardapio
