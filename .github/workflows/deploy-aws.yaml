@@ -43,6 +43,27 @@ jobs:
           --repository-name japamanoel/foodorder_cardapio \
           --region us-east-1
 
+          aws ecr describe-repositories \
+          --repository-names vilacaro/api \
+          --region us-east-1 || \
+          aws ecr create-repository \
+          --repository-name vilacaro/api \
+          --region us-east-1
+
+          aws ecr describe-repositories \
+          --repository-names diegogl12/food-order-pagamento \
+          --region us-east-1 || \
+          aws ecr create-repository \
+          --repository-name diegogl12/food-order-pagamento \
+          --region us-east-1
+
+          aws ecr describe-repositories \
+          --repository-names vilacaro/pedido \
+          --region us-east-1 || \
+          aws ecr create-repository \
+          --repository-name vilacaro/pedido \
+          --region us-east-1
+
 
       - name: BuildAndPush Dockerfile - Food-Order-Cardapio
         run: |
