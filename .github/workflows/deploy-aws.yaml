@@ -80,13 +80,13 @@ jobs:
       - name: BuildAndPush Dockerfile - Food-Order-Pagamento
         run: |
           docker build -t diegogl12/food-order-pagamento:latest . && \
-          docker tag diegogl12/food-order-pagamento:v1 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/diegogl12/food-order-pagamento:latest && \
+          docker tag diegogl12/food-order-pagamento:latest 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/diegogl12/food-order-pagamento:latest && \
           docker push 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/diegogl12/food-order-pagamento:latest
    
       - name: BuildAndPush Dockerfile - Food-Order-Pedido
         run: |
           docker build -t vilacaro/pedido:latest . && \
-          docker tag vilacaro/pedido:v1 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/vilacaro/pedido:latest && \
+          docker tag vilacaro/pedido:latest 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/vilacaro/pedido:latest && \
           docker push 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/vilacaro/pedido:latest
 
       - name: Update Kube Config
