@@ -32,7 +32,7 @@ jobs:
           --region ${{ env.AWS_REGION }} | \
           docker login --username AWS \
           --password-stdin \
-          759212231558.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
+          916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
 
       - name: BuildAndPush Dockerfile - Food-Order-Usuarios
         run: |
@@ -67,7 +67,6 @@ jobs:
       - name: Get Load Balancer URL from food-order-terraform-db
         id: get_lb_url
         run: |
-          LB_URL=$(kubectl get svc my-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
           POSTGRES_URL="Host=${LB_URL};Port=5432;Database=${{ secrets.POSTGRES_DB }};Username=${{ secrets.POSTGRES_USER }};Password=${{ secrets.POSTGRES_PASSWORD }}"
 
       - name: Kube Apply
