@@ -10,6 +10,7 @@ env:
   AWS_REGION: us-east-1
   CLUSTER_NAME: EKS-FOOD-ORDER-API-CLUSTER
 
+jobs:
   deploy-production:
     name: Deploy EKS Food Order Production
     runs-on: ubuntu-latest
