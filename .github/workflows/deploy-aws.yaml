@@ -42,9 +42,9 @@ jobs:
       
       - name: BuildAndPush Dockerfile - Food-Order-Cardapio
         run: |
-          docker build -t japamanoel/foodorder_cardapio:latest . && \
-          docker tag japamanoel/foodorder_cardapio:v1 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/japamanoel/foodorder_cardapio:latest && \
-          docker push 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/japamanoel/foodorder_cardapio:latest
+          docker build -t japamanoel/foodorder_cardapio . && \
+          docker tag japamanoel/foodorder_cardapio:latest 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/japamanoel/foodorder_cardapio:latest && \
+          docker push 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/japamanoel/foodorder_cardapio
 
       - name: BuildAndPush Dockerfile - Food-Order-Pagamento
         run: |
