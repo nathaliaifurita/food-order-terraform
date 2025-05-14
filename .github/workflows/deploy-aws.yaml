@@ -8,7 +8,7 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  CLUSTER_NAME: EKS-FOOD-ORDER-API-CLUSTER
+  CLUSTER_NAME: EKS-FOOD-ORDER-API
 
 jobs:
   deploy-production:
