@@ -95,11 +95,6 @@ jobs:
           --name ${{ env.CLUSTER_NAME }} \
           --region ${{ env.AWS_REGION }}
 
-      - name: Get Load Balancer URL from food-order-terraform-db
-        id: get_lb_url
-        run: |
-          POSTGRES_URL="Host=${LB_URL};Port=5432;Database=${{ secrets.POSTGRES_DB }};Username=${{ secrets.POSTGRES_USER }};Password=${{ secrets.POSTGRES_PASSWORD }}"
-
       - name: Kube Apply
         run: |
           kubectl apply -f k8s/
