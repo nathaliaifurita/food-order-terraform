@@ -49,3 +49,16 @@ resource "aws_ecr_repository" "foodorder_pagamento" {
     Project     = "FoodOrder"
   }
 }
+
+  resource "aws_ecr_repository" "foodorder_producao_lanches" {
+  name = "diegogl12/food-order-producao"  # use exatamente o nome que vai usar no push
+
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+
+  tags = {
+    Environment = "prod"
+    Project     = "FoodOrder"
+  }
+}

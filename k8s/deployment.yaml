@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: app-db-deployment
+  name: api-deployment
 spec:
   replicas: 1
   selector:
@@ -62,6 +62,29 @@ spec:
               dotnet FoodOrder.API.dll
         - name: api-pedido
           image: vilacaro/pedido:latest
+          ports:
+            - containerPort: 9000
+          envFrom:
+            - configMapRef:
+                name: db-config
+            - secretRef:
+                name: db-secrets      
+          env:
+            - name: ASPNETCORE_URLS
+              value: "http://0.0.0.0:9000"
+            - name: ConnectionStrings__DefaultConnection
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: $POSTGRES_URL # value: "Host=db-service;Port=5432;Database=foodorderdb;Username=postgres;Password=postgres"
+          command:
+            - "sh"
+            - "-c"
+            - |
+              echo "Iniciando API..." &&
+              dotnet FoodOrder.API.dll
+        - name: api-producao-lanches
+          image: diegogl12/food-order-producao:latest
           ports:
             - containerPort: 9000
           envFrom:

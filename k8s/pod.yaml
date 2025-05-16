@@ -60,6 +60,24 @@ spec:
         - |
           echo "Iniciando API..." &&
           dotnet FoodOrder.API.dll
+    - name: api-pod-producao-lanches-config
+      image: diegogl12/food-order-producao:latest
+      ports:
+        - containerPort: 9000
+      env:
+        - name: ConnectionStrings__DefaultConnection
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: DB_CONNECTION_STRING
+        - name: ASPNETCORE_URLS
+          value: "http://0.0.0.0:9000"
+      command: 
+        - "sh"
+        - "-c"
+        - |
+          echo "Iniciando API..." &&
+          dotnet FoodOrder.API.dll
     - name: api-pod-usuarios
       image: vilacaro/api:v1
       ports:
