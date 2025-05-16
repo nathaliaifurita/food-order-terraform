@@ -3,11 +3,12 @@ name: Deploy AWS Production - FOOD-ORDER-API
 on:
   push:
     branches:
-      - main
+    - main
+#    - fase4_d
 
 env:
-  AWS_REGION: us-east-1
-  CLUSTER_NAME: EKS-FOOD-ORDER-API-CLUSTER
+  AWS_REGION: ${{ env.AWS_REGION }}
+  CLUSTER_NAME: EKS-FOOD-ORDER-API
 
 jobs:
   deploy-production:
@@ -21,38 +22,106 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: ${{ env.AWS_REGION }}
-      
+
+      - name: Terraform Setup
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt -check
+        continue-on-error: true
+
+      - name: Terraform Init
+        id: init
+        run: terraform init -input=false
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -out=tfplan -no-color -input=false
+        continue-on-error: true
+
+      - name: Terraform Apply
+        id: apply
+        run: terraform apply -input=false -auto-approve
+
       - name: Login ECR
         run: |
           aws ecr get-login-password \
           --region ${{ env.AWS_REGION }} | \
           docker login --username AWS \
           --password-stdin \
-          759212231558.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
+          916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
 
-      - name: BuildAndPush Dockerfile
+      - name: Garantir que o repositório ECR existe
+        run: |
+          aws ecr describe-repositories \
+          --repository-names japamanoel/foodorder_cardapio \
+          --region us-east-1 || \
+          aws ecr create-repository \
+          --repository-name japamanoel/foodorder_cardapio \
+          --region us-east-1
+
+          aws ecr describe-repositories \
+          --repository-names vilacaro/api \
+          --region us-east-1 || \
+          aws ecr create-repository \
+          --repository-name vilacaro/api \
+          --region us-east-1
+
+          aws ecr describe-repositories \
+          --repository-names diegogl12/food-order-pagamento \
+          --region us-east-1 || \
+          aws ecr create-repository \
+          --repository-name diegogl12/food-order-pagamento \
+          --region us-east-1
+
+          aws ecr describe-repositories \
+          --repository-names vilacaro/pedido \
+          --region us-east-1 || \
+          aws ecr create-repository \
+          --repository-name vilacaro/pedido \
+          --region us-east-1
+
+          aws ecr describe-repositories \
+          --repository-names diegogl12/food-order-producao \
+          --region us-east-1 || \
+          aws ecr create-repository \
+          --repository-name diegogl12/food-order-producao \
+          --region us-east-1
+
+      - name: BuildAndPush Dockerfile - Food-Order-Cardapio
+        run: |
+          docker build -t japamanoel/foodorder_cardapio . && \
+          docker tag japamanoel/foodorder_cardapio:latest 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/japamanoel/foodorder_cardapio:latest && \
+          docker push 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/japamanoel/foodorder_cardapio
+
+      - name: BuildAndPush Dockerfile - Food-Order-Usuarios
         run: |
           docker build -t vilacaro/api . && \
-          docker tag vilacaro/api:v1 759212231558.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/vilacaro/api:v1 && \
-          docker push 759212231558.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/vilacaro/api
-    
-      - name: Update Kube Config
+          docker tag vilacaro/api:latest 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/vilacaro/api:latest && \
+          docker push 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/vilacaro/api:latest
+      
+      - name: BuildAndPush Dockerfile - Food-Order-Pagamento
         run: |
-          aws eks update-kubeconfig \
-          --name ${{ env.CLUSTER_NAME }} \
-          --region ${{ env.AWS_REGION }}
+          docker build -t diegogl12/food-order-pagamento:latest . && \
+          docker tag diegogl12/food-order-pagamento:latest 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/diegogl12/food-order-pagamento:latest && \
+          docker push 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/diegogl12/food-order-pagamento:latest
+   
+      - name: BuildAndPush Dockerfile - Food-Order-Pedido
+        run: |
+          docker build -t vilacaro/pedido:latest . && \
+          docker tag vilacaro/pedido:latest 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/vilacaro/pedido:latest && \
+          docker push 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/vilacaro/pedido:latest
 
-      - name: Get Load Balancer URL from food-order-terraform-db
-        id: get_lb_url
+      - name: BuildAndPush Dockerfile - Food-Order-Producao-Lanches
         run: |
-          LB_URL=$(kubectl get svc my-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
-          POSTGRES_URL="Host=${LB_URL};Port=5432;Database=${{ secrets.POSTGRES_DB }};Username=${{ secrets.POSTGRES_USER }};Password=${{ secrets.POSTGRES_PASSWORD }}"
-
-      - name: Kube Apply
-        run: |
-          kubectl apply -f k8s/api-pod.yaml
-          kubectl apply -f k8s/api-service.yaml
-          kubectl apply -f k8s/api-deployment.yaml
+          docker build -t diegogl12/food-order-producao:latest . && \
+          docker tag diegogl12/food-order-producao:latest 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/diegogl12/food-order-producao:latest && \
+          docker push 916083420257.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/diegogl12/food-order-producao:latest

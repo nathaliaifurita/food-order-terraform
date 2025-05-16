@@ -1,5 +1,7 @@
 # food-order-terraform
 
+[![SonarQube Cloud](https://sonarcloud.io/images/project_badges/sonarcloud-light.svg)](https://sonarcloud.io/summary/new_code?id=nathaliaifurita_food-order-terraform)
+
 1. Na página do AWS Academy, clicar em "Start Lab"
 2. Acessar a página do Terraform Cloud
 3. Altere as informações das variáveis no terraform, em Settings -> Variable sets -> AWS_CONFIG -> Edit variable set
