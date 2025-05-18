@@ -7,8 +7,7 @@ on:
     - fase_4f
 
 env:
-  AWS_REGION: ${{ env.AWS_REGION }}
-  CLUSTER_NAME: EKS-FOOD-ORDER-API
+  AWS_REGION: 'us-east-1'
 
 jobs:
   deploy-production:
