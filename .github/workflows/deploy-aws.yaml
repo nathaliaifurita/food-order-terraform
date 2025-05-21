@@ -4,10 +4,9 @@ on:
   push:
     branches:
     - main
-#    - fase4_d
 
 env:
-  AWS_REGION: ${{ env.AWS_REGION }}
+  AWS_REGION: 'us-east-1'
   CLUSTER_NAME: EKS-FOOD-ORDER-API
 
 jobs:
