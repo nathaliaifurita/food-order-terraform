@@ -22,8 +22,8 @@ variable "availability_zones" {
   default     = ["us-east-1a", "us-east-1b"]
 }
 
-variable "project_name" {
-  description = "Nome do projeto (para tags e nomes)"
+variable "projectName" {
+  description = "FOOD-ORDER"
   type        = string
 }
 
