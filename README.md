@@ -122,7 +122,17 @@ Passos:
 
 Com essas variáveis configuradas, o Terraform poderá utilizar os recursos da AWS de forma segura, garantindo que sua infraestrutura seja criada e configurada corretamente.
 
+### 🗄️ Outros repos do microserviço dessa arquitetura
+- [Food Order Produção](https://github.com/diegogl12/food-order-producao)
+- [Food Order Pagamento](https://github.com/diegogl12/food-order-pagamento)
+- [Food Order Cardápio](https://github.com/RafaelKamada/foodorder-cardapio)
+- [Food Order Pedidos](https://github.com/vilacalima/food-order-pedidos)
+- [Food Order Usuários](https://github.com/RafaelKamada/FoodOrder)
 
+### 🗄️ Outros repos do Terraform/DB dessa arquitetura
+- [Food Order Terraform](https://github.com/RafaelKamada/food-order-terraform-infra)
+- [Food Order DB](https://github.com/nathaliaifurita/food-order-terraform-db)
+- [Food Order MongoDB](https://github.com/RafaelKamada/food-order-terraform-mongodb)
 
 ### :busts_in_silhouette: Autores
 | [<img loading="lazy" src="https://avatars.githubusercontent.com/u/96452759?v=4" width=115><br><sub>Robson Vilaça - RM358345</sub>](https://github.com/vilacalima) |  [<img loading="lazy" src="https://avatars.githubusercontent.com/u/16946021?v=4" width=115><br><sub>Diego Gomes - RM358549</sub>](https://github.com/diegogl12) |  [<img loading="lazy" src="https://avatars.githubusercontent.com/u/8690168?v=4" width=115><br><sub>Nathalia Freire - RM359533</sub>](https://github.com/nathaliaifurita) |  [<img loading="lazy" src="https://avatars.githubusercontent.com/u/43392619?v=4" width=115><br><sub>Rafael Kamada - RM359345</sub>](https://github.com/RafaelKamada) |
